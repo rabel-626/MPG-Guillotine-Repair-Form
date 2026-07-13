@@ -26,7 +26,9 @@
   .app-title h1 { margin:0; font-size:26px; color:var(--blue); }
   .app-title p { margin:5px 0 0; color:#5e6b75; }
   .layout { display:grid; grid-template-columns:minmax(0, 1fr) minmax(360px, .72fr); gap:18px; align-items:start; }
-  .panel { background:var(--card); border:1px solid #cad3da; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.06); overflow:hidden; margin-bottom:18px; }
+  .panel { background:var(--card); border:1px solid #cad3da; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.06); overflow:visible; margin-bottom:18px; position:relative; }
+  .panel:focus-within { z-index:100; }
+  .panel h2:first-child { border-radius:10px 10px 0 0; }
   .panel h2 { margin:0; padding:11px 14px; font-size:16px; color:var(--blue); background:var(--blue-light); border-bottom:1px solid #b8cbd8; }
   .panel-body { padding:14px; }
   .grid { display:grid; gap:12px; }
@@ -55,8 +57,8 @@
   .checklist { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:7px; margin-top:10px; max-height:230px; overflow:auto; padding:4px; }
   .check-item { display:flex; gap:8px; align-items:flex-start; border:1px solid #d4dde3; padding:8px; border-radius:6px; background:#fafcfd; }
   .check-item input { margin-top:2px; }
-  .search-wrap { position:relative; }
-  .suggestions { display:none; position:absolute; z-index:20; left:0; right:0; top:100%; max-height:116px; overflow-y:auto; overflow-x:hidden; background:#fff; border:1px solid #9aa9b4; border-radius:0 0 7px 7px; box-shadow:0 7px 18px rgba(0,0,0,.15); }
+  .search-wrap { position:relative; z-index:200; }
+  .suggestions { display:none; position:absolute; z-index:9999; left:0; right:0; top:100%; max-height:116px; overflow-y:auto; overflow-x:hidden; background:#fff; border:1px solid #9aa9b4; border-radius:0 0 7px 7px; box-shadow:0 7px 18px rgba(0,0,0,.15); }
   .suggestion { min-height:58px; padding:9px 10px; border-bottom:1px solid #e2e7ea; cursor:pointer; }
   .suggestion:hover, .suggestion.active { background:#e7f2f8; }
   .suggestion-main { font-weight:700; }
@@ -83,7 +85,7 @@
   #printRoot { display:none; }
 
   /* Printable form */
-  .print-page { width:8in; min-height:10.35in; margin:0 auto 12px; background:#fff; padding:0.02in 0.02in .28in; color:#111; font-family:Arial, Helvetica, sans-serif; display:flex; flex-direction:column; page-break-after:always; overflow:hidden; position:relative; -webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact; }
+  .print-page { width:8in; min-height:10.35in; margin:0 auto 12px; background:#fff; padding:0.02in 0.02in .18in; color:#111; font-family:Arial, Helvetica, sans-serif; display:flex; flex-direction:column; page-break-after:always; overflow:hidden; position:relative; -webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact; }
   .print-page:last-child { page-break-after:auto; }
   .doc-header { display:grid; grid-template-columns:54% 46%; border:1px solid #222; font-size:10px; }
   .doc-logo { grid-row:span 3; border-right:1px solid #222; height:.92in; display:flex; align-items:center; justify-content:center; overflow:hidden; }
@@ -94,10 +96,11 @@
   .doc-footer-row div { padding:3px 7px; border-right:1px solid #222; text-align:center; }
   .doc-footer-row div:last-child { border-right:0; }
   .form-title { text-align:center; color:var(--blue); font-size:18px; font-weight:800; margin:.20in 0 .08in; }
+  .print-page.final-page .form-title { margin:.15in 0 .06in; }
   .project-info { border:1px solid var(--line); min-height:.48in; padding:9px 9px 6px; font-size:18px; font-weight:800; text-align:center; display:flex; align-items:center; justify-content:center; gap:6px; }
   .project-info .project-value { font-weight:400; }
   .top-info { display:grid; grid-template-columns:1fr 1fr 1fr; border:1px solid var(--line); border-top:0; }
-  .top-info div { min-height:.43in; border-right:1px solid var(--line); padding:10px 9px 6px; font-size:12px; font-weight:700; text-align:center; display:flex; align-items:center; justify-content:center; }
+  .top-info div { min-height:.43in; border-right:1px solid var(--line); padding:10px 9px 6px; font-size:15px; font-weight:700; text-align:center; display:flex; align-items:center; justify-content:center; }
   .top-info div:last-child { border-right:0; }
   .section { margin-top:.16in; border:1px solid var(--line); }
   .section.connected { margin-top:0; border-top:0; }
@@ -113,16 +116,20 @@
   .material-table th:first-child, .material-table td:first-child { border-left:0; }
   .material-table th:last-child, .material-table td:last-child { border-right:0; }
   .material-table tbody tr:last-child td { border-bottom:0; }
+  .print-page.final-page .material-table th { height:.29in; padding:4px; }
+  .print-page.final-page .material-table td { height:.30in; padding:4px 5px; }
   .continuation-note { font-size:9px; color:#555; margin:3px 3px -3px; text-align:right; }
   .green .section-title { background-color:var(--green-light); color:var(--green); box-shadow:inset 0 0 0 1000px var(--green-light); }
   .orange .section-title { background-color:var(--orange-light); color:var(--orange); box-shadow:inset 0 0 0 1000px var(--orange-light); }
   .handoff-grid { display:grid; grid-template-columns:1fr 1fr; }
   .handoff-grid div { min-height:.45in; padding:10px 8px; font-size:11px; font-weight:700; border-right:1px solid var(--line); text-align:center; display:flex; align-items:center; justify-content:center; }
   .handoff-grid div:last-child { border-right:0; }
-  .location-title { background-color:#e5e5e5; border-top:1px solid var(--line); padding:6px 8px; font-size:11px; font-weight:800; text-align:center; -webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact; box-shadow:inset 0 0 0 1000px #e5e5e5; }
-  .location-body { min-height:.58in; padding:7px 8px; font-size:10px; white-space:pre-wrap; text-align:center; display:flex; align-items:center; justify-content:center; }
-  .form-note { position:absolute; left:0; right:0; bottom:.06in; text-align:center; color:#666; font-size:9px; font-style:italic; }
-  .rev { position:absolute; right:.03in; bottom:.06in; text-align:right; font-size:9px; }
+  .location-title { background-color:#e5e5e5; border-top:1px solid var(--line); padding:6px 8px; font-size:14px; font-weight:800; text-align:center; -webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact; box-shadow:inset 0 0 0 1000px #e5e5e5; }
+  .location-body { min-height:.52in; padding:5px 8px; font-size:13px; white-space:pre-wrap; text-align:center; display:flex; align-items:center; justify-content:center; }
+  .print-page.final-page .location-body { min-height:.47in; max-height:.47in; overflow:hidden; }
+  .print-footer { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; flex:0 0 auto; min-height:.13in; padding:2px 3px 0; line-height:1.05; }
+  .form-note { grid-column:2; text-align:center; color:#666; font-size:8px; font-style:italic; white-space:nowrap; }
+  .rev { grid-column:3; justify-self:end; text-align:right; font-size:8px; }
 
   @media (max-width:1050px) {
     .layout { grid-template-columns:1fr; }
@@ -183,7 +190,7 @@
       <div><label for="formNo">Form #</label><input id="formNo" type="text" autocomplete="off"></div>
       <div><label for="requestDate">Date Requested</label><input id="requestDate" type="date"></div>
       <div><label for="requestType">Request Type</label><select id="requestType"><option>Return Blanks</option><option>Subjects Only</option></select></div>
-      <div style="grid-column:1/-1"><label for="locationDetails">Requested Location Details for Completed Material</label><textarea id="locationDetails" rows="2" placeholder="Enter the requested return location, skid, rack, staging area, or other completion details."></textarea></div>
+      <div style="grid-column:1/-1"><label for="locationDetails">Location Details for Delivered Material</label><textarea id="locationDetails" rows="2" maxlength="350" placeholder="Enter the delivered-material location, skid, rack, staging area, or other delivery details."></textarea></div>
     </div>
   </div>
 
@@ -202,7 +209,7 @@
             <div><label for="sheetSelect">Worksheet</label><select id="sheetSelect" disabled></select></div>
             <div><label for="headerRow">Header Row</label><input id="headerRow" type="number" min="1" value="1" disabled></div>
           </div>
-          <div class="hint">The parser reads headers only from the exact row shown above. Blank worksheet rows are preserved so the row number remains accurate. Printed forms use a fixed 11 repair rows per page.</div>
+          <div class="hint">The parser reads headers only from the exact row shown above. Blank worksheet rows are preserved so the row number remains accurate. Printed forms use 17 repair rows on continuation pages and 11 repair rows on the final signature page.</div>
         </div>
       </div>
 
@@ -248,7 +255,7 @@
             <div class="kpi"><div class="name">Printed Pages</div><div id="pageCount" class="value">1</div></div>
           </div>
           <div class="sheets-entry">
-            <label for="sheetsProvided">Number of Builds/Sheets Provided</label>
+            <label for="sheetsProvided">Number of Sheets / Builds Provided</label>
             <div class="sheets-entry-row">
               <input id="sheetsProvided" type="number" min="0" step="1" inputmode="numeric" placeholder="Auto-filled from repair quantities">
               <button id="useAutoSheets" class="light" type="button">Use Auto Value</button>
@@ -263,8 +270,12 @@
           </div>
           <div class="toolbar" style="margin-top:12px">
             <button id="printBtn" type="button">Print / Save as PDF</button>
+            <button id="exportJson" class="secondary" type="button">Save Repair Request JSON</button>
+            <button id="importJson" class="light" type="button">Load Repair Request JSON</button>
+            <input id="jsonFile" type="file" accept=".json,application/json" hidden>
             <button id="clearRepairs" class="danger" type="button">Clear Repair List</button>
           </div>
+          <div class="hint">JSON files preserve the request information, imported worksheet rows, selected columns, repair subjects, damage/repair quantities, and sheet settings so the request can be reopened and modified later.</div>
           <div class="hint">The app recommends the highest Repair QTY as the sheet quantity. A manually entered Number of Sheets Provided overrides that value on the printed form.</div>
         </div>
       </div>
@@ -296,6 +307,7 @@ const els={
   repairQty:$('repairQty'), selectedRowSummary:$('selectedRowSummary'), addRepair:$('addRepair'), repairHead:$('repairHead'), repairBody:$('repairBody'),
   repairCount:$('repairCount'), sheetsNeeded:$('sheetsNeeded'), pageCount:$('pageCount'), previewRoot:$('previewRoot'), printRoot:$('printRoot'),
   sheetsProvided:$('sheetsProvided'), autoSheetsNote:$('autoSheetsNote'), useAutoSheets:$('useAutoSheets'),
+  exportJson:$('exportJson'), importJson:$('importJson'), jsonFile:$('jsonFile'),
   projectName:$('projectName'), jobNo:$('jobNo'), formNo:$('formNo'), requestDate:$('requestDate'), requestType:$('requestType'), locationDetails:$('locationDetails')
 };
 function setStatus(message,type=''){
@@ -441,9 +453,11 @@ els.headerRow.addEventListener('change',()=>processHeaderRow());
 function loadSheet(name,autoDetect){
   state.sheetName=name;
   const ws=state.workbook.Sheets[name];
-  state.rawRows=state.workbook.__csvRows?.[name]
-    ? state.workbook.__csvRows[name].map(row=>Array.isArray(row)?row.slice():[])
-    : XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false,blankrows:true});
+  state.rawRows=state.workbook.__jsonRows?.[name]
+    ? state.workbook.__jsonRows[name].map(row=>Array.isArray(row)?row.slice():[])
+    : state.workbook.__csvRows?.[name]
+      ? state.workbook.__csvRows[name].map(row=>Array.isArray(row)?row.slice():[])
+      : XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false,blankrows:true});
   let headerIndex=0;
   if(autoDetect){
     headerIndex=detectHeaderRow(state.rawRows);
@@ -635,9 +649,36 @@ function mini(text,title,fn,cls='secondary'){ const b=document.createElement('bu
 function moveRepair(i,delta){ const j=i+delta; if(j<0||j>=state.repairs.length)return; [state.repairs[i],state.repairs[j]]=[state.repairs[j],state.repairs[i]]; renderRepairTable(); renderPrint(); }
 $('clearRepairs').addEventListener('click',()=>{ if(state.repairs.length&&!confirm('Clear all repairs from the export list?'))return; state.repairs=[]; renderRepairTable(); renderPrint(); });
 function maxQty(){ return state.repairs.reduce((m,r)=>Math.max(m,Number(r.qty)||0),0); }
-const PRINT_ROWS_PER_PAGE=11;
-function rowCapacity(){ return PRINT_ROWS_PER_PAGE; }
-function pageTotal(){ return Math.max(1,Math.ceil(state.repairs.length/rowCapacity())); }
+const CONTINUATION_ROWS_PER_PAGE=17;
+const FINAL_PAGE_ROWS=11;
+function buildPrintPages(){
+  const rows=state.repairs.slice();
+  if(rows.length<=FINAL_PAGE_ROWS){
+    return [{rows,capacity:FINAL_PAGE_ROWS,isLastPage:true}];
+  }
+
+  const totalPages=1+Math.ceil((rows.length-FINAL_PAGE_ROWS)/CONTINUATION_ROWS_PER_PAGE);
+  const pages=[];
+  let cursor=0;
+
+  for(let pageIndex=0;pageIndex<totalPages;pageIndex++){
+    const isLastPage=pageIndex===totalPages-1;
+    const capacity=isLastPage?FINAL_PAGE_ROWS:CONTINUATION_ROWS_PER_PAGE;
+    const remaining=rows.length-cursor;
+    const take=isLastPage
+      ? remaining
+      : Math.min(capacity,Math.max(0,remaining-1));
+
+    pages.push({
+      rows:rows.slice(cursor,cursor+take),
+      capacity,
+      isLastPage
+    });
+    cursor+=take;
+  }
+  return pages;
+}
+function pageTotal(){ return buildPrintPages().length; }
 function syncSheetsProvidedField(){
   const automatic=maxQty();
   els.autoSheetsNote.textContent=`Auto-calculated sheets needed: ${automatic}`;
@@ -673,7 +714,167 @@ els.projectName.addEventListener('blur',()=>{
   renderPrint();
 });
 
-['projectName','jobNo','formNo','requestDate','requestType','locationDetails'].forEach(id=>els[id].addEventListener('input',renderPrint));
+['projectName','jobNo','formNo','requestDate','requestType'].forEach(id=>els[id].addEventListener('input',renderPrint));
+els.locationDetails.addEventListener('input',()=>{
+  if(els.locationDetails.value.length>350){
+    els.locationDetails.value=els.locationDetails.value.slice(0,350);
+  }
+  renderPrint();
+});
+
+function safeFilePart(value,fallback){
+  const cleaned=cellText(value)
+    .replace(/[<>:"/\\|?*\x00-\x1F]/g,'-')
+    .replace(/\s+/g,' ')
+    .trim()
+    .replace(/[. ]+$/g,'');
+  return cleaned||fallback;
+}
+function requestJsonPayload(){
+  return {
+    application:'Guillotine Repair Excel Helper',
+    schemaVersion:1,
+    savedAt:new Date().toISOString(),
+    request:{
+      projectName:els.projectName.value,
+      jobNo:els.jobNo.value,
+      formNo:els.formNo.value,
+      requestDate:els.requestDate.value,
+      requestType:els.requestType.value,
+      locationDetails:els.locationDetails.value
+    },
+    sourceData:{
+      fileName:state.fileName,
+      sheetName:state.sheetName||'Saved Repair Request',
+      headerRow:Math.max(1,parseInt(els.headerRow.value,10)||1),
+      rawRows:state.rawRows.map(row=>Array.isArray(row)?row.slice():[]),
+      headers:state.headers.map(header=>({...header})),
+      dataRows:state.dataRows.map(row=>({...row})),
+      selectedColumns:state.selectedColumns.slice(),
+      searchColumn:els.searchColumn.value||''
+    },
+    repairs:state.repairs.map(repair=>({
+      id:repair.id,
+      sheetName:repair.sheetName,
+      sourceRow:repair.sourceRow,
+      values:{...repair.values},
+      damageCount:Number(repair.qty)||1,
+      qty:Number(repair.qty)||1
+    })),
+    settings:{
+      sheetsProvidedManual:state.sheetsProvidedManual,
+      sheetsProvided:els.sheetsProvided.value
+    }
+  };
+}
+function downloadJson(){
+  const payload=requestJsonPayload();
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const link=document.createElement('a');
+  const project=safeFilePart(els.projectName.value,'Repair Request');
+  const job=safeFilePart(els.jobNo.value,'No Job Number');
+  link.href=URL.createObjectURL(blob);
+  link.download=`${project} - Job ${job}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+}
+function sanitizeLoadedRepair(repair,index){
+  const quantity=Math.max(1,parseInt(repair?.damageCount??repair?.qty,10)||1);
+  return {
+    id:cellText(repair?.id)||(crypto.randomUUID?crypto.randomUUID():String(Date.now()+index+Math.random())),
+    sheetName:cellText(repair?.sheetName)||state.sheetName||'Saved Repair Request',
+    sourceRow:parseInt(repair?.sourceRow,10)||index+2,
+    values:repair?.values&&typeof repair.values==='object'?{...repair.values}:{},
+    qty:quantity
+  };
+}
+function restoreJsonRequest(payload){
+  if(!payload||typeof payload!=='object') throw new Error('The selected file does not contain a valid repair request.');
+  if(payload.application&&payload.application!=='Guillotine Repair Excel Helper'){
+    throw new Error('This JSON file was not created by the Guillotine Repair Excel Helper.');
+  }
+
+  const request=payload.request||{};
+  els.projectName.value=cellText(request.projectName);
+  els.jobNo.value=cellText(request.jobNo);
+  els.formNo.value=cellText(request.formNo);
+  els.requestDate.value=cellText(request.requestDate);
+  els.requestType.value=['Return Blanks','Subjects Only'].includes(request.requestType)?request.requestType:'Return Blanks';
+  els.locationDetails.value=String(request.locationDetails??'').slice(0,350);
+
+  const source=payload.sourceData||{};
+  const sheetName=cellText(source.sheetName)||'Saved Repair Request';
+  const rawRows=Array.isArray(source.rawRows)
+    ? source.rawRows.map(row=>Array.isArray(row)?row.slice():[])
+    : [];
+
+  state.fileName=cellText(source.fileName)||'Saved repair request JSON';
+  state.sheetName=sheetName;
+  state.selectedColumns=Array.isArray(source.selectedColumns)?source.selectedColumns.map(cellText).filter(Boolean):[];
+  state.selectedSourceIndex=null;
+
+  if(rawRows.length){
+    state.workbook={
+      SheetNames:[sheetName],
+      Sheets:{[sheetName]:{}},
+      __jsonRows:{[sheetName]:rawRows}
+    };
+    state.rawRows=rawRows;
+    els.sheetSelect.innerHTML='';
+    els.sheetSelect.add(new Option(sheetName,sheetName));
+    els.sheetSelect.value=sheetName;
+    els.sheetSelect.disabled=false;
+    els.headerRow.disabled=false;
+    els.headerRow.value=Math.max(1,parseInt(source.headerRow,10)||1);
+    loadSheet(sheetName,false);
+  }else{
+    state.workbook=null;
+    state.rawRows=[];
+    state.headers=Array.isArray(source.headers)?source.headers.map(header=>({...header})):[];
+    state.dataRows=Array.isArray(source.dataRows)?source.dataRows.map(row=>({...row})):[];
+    renderColumns();
+    renderSearchColumns();
+    els.rowSearch.disabled=!state.dataRows.length;
+    els.repairQty.disabled=!state.dataRows.length;
+  }
+
+  if(source.searchColumn&&state.headers.some(header=>header.key===source.searchColumn)){
+    els.searchColumn.value=source.searchColumn;
+  }
+
+  state.repairs=Array.isArray(payload.repairs)
+    ? payload.repairs.map(sanitizeLoadedRepair)
+    : [];
+
+  const settings=payload.settings||{};
+  state.sheetsProvidedManual=!!settings.sheetsProvidedManual;
+  els.sheetsProvided.value=settings.sheetsProvided??'';
+  if(!state.sheetsProvidedManual) syncSheetsProvidedField();
+
+  els.rowSearch.value='';
+  renderSelectedRow();
+  renderRepairTable();
+  renderPrint();
+  setStatus(`Loaded saved repair request with ${state.repairs.length} repair subject${state.repairs.length===1?'':'s'}.`,'success');
+}
+els.exportJson.addEventListener('click',downloadJson);
+els.importJson.addEventListener('click',()=>els.jsonFile.click());
+els.jsonFile.addEventListener('change',async()=>{
+  const file=els.jsonFile.files?.[0];
+  if(!file) return;
+  try{
+    const payload=JSON.parse(await file.text());
+    restoreJsonRequest(payload);
+  }catch(error){
+    console.error(error);
+    alert(`Unable to load the repair request JSON. ${error?.message||error}`);
+  }finally{
+    els.jsonFile.value='';
+  }
+});
+
 $('printBtn').addEventListener('click',()=>{ renderPrint(); requestAnimationFrame(()=>requestAnimationFrame(()=>window.print())); });
 function formatDate(iso){ if(!iso)return ''; const [y,m,d]=iso.split('-'); return y&&m&&d?`${m}/${d}/${y}`:iso; }
 function lineValue(label,value){ return `${label}: <span style="font-weight:400">${esc(value||'')}</span>`; }
@@ -685,9 +886,11 @@ function columnWidths(keys){
   return [...weights.map(w=>remaining*w/total),qty,completed];
 }
 function renderPrint(){
-  const keys=repairKeys(); const capacity=rowCapacity(); const total=pageTotal(); const pages=[];
-  for(let p=0;p<total;p++){
-    const chunk=state.repairs.slice(p*capacity,(p+1)*capacity);
+  const keys=repairKeys(); const printPages=buildPrintPages(); const total=printPages.length; const pages=[];
+  printPages.forEach((pageData,p)=>{
+    const isLastPage=pageData.isLastPage;
+    const capacity=pageData.capacity;
+    const chunk=pageData.rows.slice();
     while(chunk.length<capacity) chunk.push(null);
     const widths=columnWidths(keys);
     const colgroup='<colgroup>'+widths.map(w=>`<col style="width:${w.toFixed(2)}%">`).join('')+'</colgroup>';
@@ -697,7 +900,22 @@ function renderPrint(){
       return '<tr>'+(keys.length?keys.map(k=>`<td>${esc(r.values[k]??'')}</td>`).join(''):`<td>Excel row ${r.sourceRow}</td>`)+`<td style="text-align:center;font-weight:700">${esc(r.qty)}</td><td></td></tr>`;
     }).join('');
     const continuation=total>1?`<div class="continuation-note">Repair list ${p===0?'begins':'continued'} — page ${p+1} of ${total}</div>`:'';
-    pages.push(`<section class="print-page">
+    const finalHandoffSections=isLastPage?`
+      <div class="section green connected">
+        <div class="section-title">MVP SUPERVISOR HANDOFF</div>
+        <div class="handoff-grid"><div>MVP Supervisor Sign-Off: ____________________________________</div><div>Number of Sheets / Builds Provided: <span style="font-size:14px">${sheetsProvidedValue()||'______________________'}</span></div></div>
+      </div>
+      <div class="section orange connected">
+        <div class="section-title">GUILLOTINE OPERATOR RECEIPT</div>
+        <div class="handoff-grid"><div>Guillotine Operator Sign-Off: _________________________________</div><div>Sign-Off Date: _______________________________________________</div></div>
+        <div class="location-title">LOCATION DETAILS FOR DELIVERED MATERIAL</div>
+        <div class="location-body">${esc(els.locationDetails.value)}</div>
+      </div>
+      <div class="print-footer">
+        <div class="form-note">Complete all applicable fields before material handoff and receipt.</div>
+        <div class="rev">Rev 1</div>
+      </div>`:'';
+    pages.push(`<section class="print-page ${isLastPage?'final-page':'continuation-page'}">
       <div class="doc-header">
         <div class="doc-logo"><img src="${LOGO}" alt="Millennium Print Group"></div>
         <div class="doc-meta">Document Number:</div><div class="doc-meta">Approval Signatures:</div><div class="doc-meta">Revision Date:</div>
@@ -716,19 +934,9 @@ function renderPrint(){
         <div class="section-title">MATERIAL / CARD REQUIREMENTS</div>${continuation}
         <table class="material-table">${colgroup}<thead><tr>${headers}</tr></thead><tbody>${body}</tbody></table>
       </div>
-      <div class="section green connected">
-        <div class="section-title">MPV SUPERVISOR HANDOFF</div>
-        <div class="handoff-grid"><div>MPV Supervisor Sign-Off: ____________________</div><div>Number of Sheets Provided: <span style="font-size:14px">${sheetsProvidedValue()||'__________'}</span></div></div>
-      </div>
-      <div class="section orange connected">
-        <div class="section-title">GUILLOTINE OPERATOR RECEIPT</div>
-        <div class="handoff-grid"><div>Guillotine Operator Sign-Off: ________________</div><div>Sign-Off Date: __________________</div></div>
-        <div class="location-title">REQUESTED LOCATION DETAILS FOR COMPLETED MATERIAL</div>
-        <div class="location-body">${esc(els.locationDetails.value)}</div>
-      </div>
-      <div class="form-note">Complete all applicable fields before material handoff and receipt.</div><div class="rev">Rev 1</div>
+      ${finalHandoffSections}
     </section>`);
-  }
+  });
   const markup=pages.join('');
   els.previewRoot.innerHTML=markup;
   els.printRoot.innerHTML=markup;

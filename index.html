@@ -31,6 +31,114 @@
   .panel h2:first-child { border-radius:10px 10px 0 0; }
   .panel h2 { margin:0; padding:11px 14px; font-size:16px; color:var(--blue); background:var(--blue-light); border-bottom:1px solid #b8cbd8; }
   .panel-body { padding:14px; }
+  .user-guide { overflow:hidden; }
+  .user-guide details { background:#fff; }
+  .user-guide summary {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:13px 16px;
+    cursor:pointer;
+    list-style:none;
+    color:var(--blue);
+    background:var(--blue-light);
+    border-bottom:1px solid transparent;
+    font-size:17px;
+    font-weight:800;
+    user-select:none;
+  }
+  .user-guide summary::-webkit-details-marker { display:none; }
+  .user-guide summary::after {
+    content:'Show instructions';
+    flex:0 0 auto;
+    padding:4px 8px;
+    border:1px solid #9fb9c9;
+    border-radius:999px;
+    background:#fff;
+    color:#3e6074;
+    font-size:11px;
+    font-weight:700;
+  }
+  .user-guide details[open] summary { border-bottom-color:#b8cbd8; }
+  .user-guide details[open] summary::after { content:'Hide instructions'; }
+  .guide-intro {
+    margin:0 0 13px;
+    padding:10px 12px;
+    border-left:4px solid var(--blue);
+    background:#eef6fa;
+    color:#344b59;
+    font-size:13px;
+    line-height:1.45;
+  }
+  .guide-layout {
+    display:grid;
+    grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);
+    gap:16px;
+    align-items:start;
+  }
+  .guide-heading {
+    margin:0 0 9px;
+    color:var(--blue);
+    font-size:14px;
+  }
+  .guide-steps {
+    display:grid;
+    gap:8px;
+    counter-reset:guide-step;
+  }
+  .guide-step {
+    position:relative;
+    min-height:48px;
+    padding:9px 11px 9px 47px;
+    border:1px solid #d2dce2;
+    border-radius:7px;
+    background:#fafcfd;
+    font-size:12px;
+    line-height:1.4;
+  }
+  .guide-step::before {
+    counter-increment:guide-step;
+    content:counter(guide-step);
+    position:absolute;
+    left:10px;
+    top:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:27px;
+    height:27px;
+    border-radius:50%;
+    background:var(--blue);
+    color:#fff;
+    font-size:13px;
+    font-weight:800;
+  }
+  .guide-step strong { display:block; margin-bottom:2px; color:#243f50; font-size:12px; }
+  .guide-fields {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+  .guide-field {
+    padding:8px 9px;
+    border:1px solid #d2dce2;
+    border-radius:7px;
+    background:#fafcfd;
+    font-size:11px;
+    line-height:1.4;
+  }
+  .guide-field strong { display:block; margin-bottom:2px; color:#243f50; font-size:12px; }
+  .guide-note {
+    margin-top:10px;
+    padding:9px 11px;
+    border:1px solid #d4dfca;
+    border-radius:7px;
+    background:#f3f8ef;
+    color:#3d5731;
+    font-size:12px;
+    line-height:1.4;
+  }
   .grid { display:grid; gap:12px; }
   .grid-4 { grid-template-columns:repeat(4,minmax(130px,1fr)); }
   .grid-3 { grid-template-columns:repeat(3,minmax(130px,1fr)); }
@@ -157,12 +265,15 @@
   @media (max-width:1050px) {
     .layout { grid-template-columns:1fr; }
     .grid-4 { grid-template-columns:repeat(2,1fr); }
+    .guide-layout { grid-template-columns:1fr; }
   }
   @media (max-width:620px) {
     .app-shell { padding:10px; }
     .app-title { align-items:flex-start; flex-direction:column; }
     .grid-4,.grid-3,.grid-2 { grid-template-columns:1fr; }
     .kpis { grid-template-columns:1fr; }
+    .guide-fields { grid-template-columns:1fr; }
+    .user-guide summary { align-items:flex-start; flex-direction:column; }
   }
   @media print {
     @page { size:Letter portrait; margin:.25in; }
@@ -203,6 +314,131 @@
       <h1>Guillotine Repair Excel Helper</h1>
       <p>Import an Excel worksheet, select repair subjects, assign quantities, and print a paginated repair request form.</p>
     </div>
+  </div>
+
+
+  <div class="panel no-print user-guide">
+    <details>
+      <summary>How to Use This App</summary>
+      <div class="panel-body">
+        <p class="guide-intro">
+          Use this tool to import an Excel or CSV job file, select the fields needed for identification,
+          build a guillotine repair list, and print or save a completed material-handoff form. You can also
+          save the complete request as a JSON file and reopen it later for revisions.
+        </p>
+
+        <div class="guide-layout">
+          <section aria-labelledby="quickStartHeading">
+            <h3 id="quickStartHeading" class="guide-heading">Step-by-Step Instructions</h3>
+            <div class="guide-steps">
+              <div class="guide-step">
+                <strong>Start a new request or load a saved request.</strong>
+                For a new request, complete the Request Information fields below. To continue an older request,
+                select <b>Load Repair Request JSON</b> in the Repair Export List section.
+              </div>
+              <div class="guide-step">
+                <strong>Import the Excel or CSV job file.</strong>
+                Choose or drag in the source file, select the correct worksheet, and enter the row containing
+                the column headers. The data begins on the rows below that header.
+              </div>
+              <div class="guide-step">
+                <strong>Choose the columns that should appear on the repair form.</strong>
+                Check only the fields needed to identify each card or subject, such as card number, description,
+                form, position, or other job-specific identifiers.
+              </div>
+              <div class="guide-step">
+                <strong>Search for and add each repair subject.</strong>
+                Select the best Filter/Search Column, type a value in Search Available Rows, choose the matching
+                result, enter the Repair QTY Needed, and select <b>Add Repair to Export</b>.
+              </div>
+              <div class="guide-step">
+                <strong>Review and organize the repair list.</strong>
+                Correct quantities directly in the list, use the arrow buttons to change print order, or remove
+                incorrect entries. Confirm the calculated sheet requirement and enter the number actually provided
+                when it differs.
+              </div>
+              <div class="guide-step">
+                <strong>Save or print the completed request.</strong>
+                Use <b>Save Repair Request JSON</b> to preserve an editable copy. Use <b>Print / Save as PDF</b>
+                for the handoff form. The app automatically fits complete rows to each page and places the signature,
+                receipt, and delivery-location sections only on the final page.
+              </div>
+            </div>
+          </section>
+
+          <section aria-labelledby="fieldReferenceHeading">
+            <h3 id="fieldReferenceHeading" class="guide-heading">Field Reference</h3>
+            <div class="guide-fields">
+              <div class="guide-field">
+                <strong>Project Name</strong>
+                Name used to identify the project or repair request.
+              </div>
+              <div class="guide-field">
+                <strong>Job #</strong>
+                Production job number associated with the material.
+              </div>
+              <div class="guide-field">
+                <strong>Form #</strong>
+                Form, version, or production-form identifier.
+              </div>
+              <div class="guide-field">
+                <strong>Date Requested</strong>
+                Date the repair material was requested.
+              </div>
+              <div class="guide-field">
+                <strong>Request Type</strong>
+                <b>Return Blanks</b> requests replacement blank material. <b>Subjects Only</b> identifies only the
+                listed subjects or cards requiring repair.
+              </div>
+              <div class="guide-field">
+                <strong>Location Details</strong>
+                Delivery or staging location, such as a skid, rack, department, machine, or other handoff point.
+                Maximum 350 characters.
+              </div>
+              <div class="guide-field">
+                <strong>Worksheet</strong>
+                Tab within the imported workbook containing the job data.
+              </div>
+              <div class="guide-field">
+                <strong>Header Row</strong>
+                Exact worksheet row containing the field names. This is commonly row 1, but may vary by job.
+              </div>
+              <div class="guide-field">
+                <strong>Columns to Print</strong>
+                Imported fields displayed for each repair subject on the printed form.
+              </div>
+              <div class="guide-field">
+                <strong>Filter/Search Column</strong>
+                Worksheet field used to locate records, such as Card Number or Card Description.
+              </div>
+              <div class="guide-field">
+                <strong>Repair QTY Needed</strong>
+                Number of damaged copies or repair units required for the selected subject.
+              </div>
+              <div class="guide-field">
+                <strong>Sheets Needed</strong>
+                Automatic recommendation based on the highest Repair QTY in the repair list.
+              </div>
+              <div class="guide-field">
+                <strong>Sheets / Builds Provided</strong>
+                Actual quantity handed off by the MVP supervisor. Leave blank to use the automatic recommendation,
+                or enter a manual value when the provided quantity differs.
+              </div>
+              <div class="guide-field">
+                <strong>Printed Pages</strong>
+                Number of pages currently required after accounting for wrapped text and the final signature sections.
+              </div>
+            </div>
+
+            <div class="guide-note">
+              <strong>Recommended practice:</strong> Save a JSON copy before printing when the request may need later
+              revisions. The JSON file retains the imported rows, selected columns, request fields, repair quantities,
+              ordering, and sheet settings.
+            </div>
+          </section>
+        </div>
+      </div>
+    </details>
   </div>
 
   <div class="panel no-print">
@@ -309,6 +545,9 @@
         <h2>Live Print Preview</h2>
         <div class="panel-body" style="padding:0">
           <div class="preview-frame"><div id="previewRoot"></div></div>
+          <div class="toolbar" style="padding:12px 14px; justify-content:center; border-top:1px solid #cad3da; background:#f8fafb;">
+            <button id="printBtnPreview" type="button">Print / Save as PDF</button>
+          </div>
         </div>
       </div>
     </aside>
@@ -872,8 +1111,13 @@ els.jsonFile.addEventListener('change',async()=>{
   }
 });
 
+function openPrintDialog(){
+  renderPrint();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>window.print()));
+}
 window.addEventListener('beforeprint',renderPrint);
-$('printBtn').addEventListener('click',()=>{ renderPrint(); requestAnimationFrame(()=>requestAnimationFrame(()=>window.print())); });
+$('printBtn').addEventListener('click',openPrintDialog);
+$('printBtnPreview').addEventListener('click',openPrintDialog);
 function formatDate(iso){ if(!iso)return ''; const [y,m,d]=iso.split('-'); return y&&m&&d?`${m}/${d}/${y}`:iso; }
 function lineValue(label,value){ return `${label}: <span style="font-weight:400">${esc(value||'')}</span>`; }
 function columnWidths(keys){

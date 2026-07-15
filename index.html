@@ -162,6 +162,14 @@
   button.light { background:#e5edf2; color:#274354; border:1px solid #bacbd6; }
   button.danger { background:var(--danger); }
   button:disabled { opacity:.45; cursor:not-allowed; }
+  button.busy { position:relative; padding-left:34px; }
+  button.busy::before { content:''; position:absolute; left:12px; top:50%; width:13px; height:13px; margin-top:-7px; border:2px solid rgba(255,255,255,.45); border-top-color:#fff; border-radius:50%; animation:spin .8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .save-folder-box { margin:12px 0; padding:11px; border:1px solid #c9d4da; border-radius:7px; background:#f8fafb; }
+  .save-folder-row { display:flex; gap:9px; align-items:center; flex-wrap:wrap; }
+  .save-folder-status { flex:1 1 260px; min-height:38px; display:flex; align-items:center; padding:8px 10px; border:1px solid #c6d2d9; border-radius:6px; background:#fff; color:#5b6871; font-size:12px; overflow-wrap:anywhere; }
+  .save-folder-status.selected { border-color:#8eb47b; background:#f0f7ec; color:#315827; font-weight:700; }
+  .save-folder-note { margin-top:7px; color:#64727c; font-size:11px; line-height:1.4; }
   .checklist { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:7px; margin-top:10px; max-height:230px; overflow:auto; padding:4px; }
   .check-item { display:flex; gap:8px; align-items:flex-start; border:1px solid #d4dde3; padding:8px; border-radius:6px; background:#fafcfd; }
   .check-item input { margin-top:2px; }
@@ -262,10 +270,58 @@
   }
   .print-measure-ruler { position:absolute; width:1px; height:10.35in; }
 
+
+  .layout-config-grid { display:grid; grid-template-columns:minmax(190px,.8fr) minmax(240px,1.2fr) minmax(160px,.65fr); gap:12px; align-items:end; }
+  .toggle-line { display:flex; align-items:center; gap:8px; min-height:38px; padding:8px 10px; border:1px solid #c7d2d9; border-radius:6px; background:#f8fafb; font-size:12px; font-weight:700; }
+  .toggle-line input { width:auto; margin:0; }
+  .layout-status { margin:12px 0 10px; padding:9px 11px; border-radius:6px; background:#edf3f7; color:#344b59; font-size:12px; line-height:1.45; }
+  .layout-status.success { background:#e7f5e2; color:#2f6428; }
+  .layout-status.error { background:#fde8e8; color:#8b1f1f; }
+  .layout-legend { display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin:8px 0 10px; font-size:11px; color:#53636d; }
+  .legend-chip { display:inline-flex; align-items:center; gap:6px; }
+  .legend-swatch { width:18px; height:14px; border:1px solid #87949d; border-radius:3px; background:#fff; }
+  .legend-swatch.repair { background:#ffe6a8; border:2px solid #c35b00; }
+  .layout-preview-list { display:grid; gap:14px; }
+  .running-sheet-map { border:1px solid #bdc9d0; border-radius:8px; overflow:hidden; background:#fff; }
+  .running-sheet-map-header { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:9px 11px; background:#e8f1f6; border-bottom:1px solid #bdc9d0; color:#274f67; }
+  .running-sheet-map-title { font-weight:800; font-size:13px; }
+  .running-sheet-map-meta { font-size:11px; color:#526977; text-align:right; }
+  .running-sheet-scroll { overflow:auto; padding:10px; background:#f5f7f8; }
+  .running-sheet-grid { display:grid; grid-template-columns:repeat(var(--layout-cols),minmax(0,1fr)); grid-template-rows:repeat(var(--layout-rows),minmax(68px,auto)); gap:3px; align-items:stretch; }
+  .layout-card { position:relative; min-width:0; border:1px solid #88969f; border-radius:3px; background:#fff; padding:5px; overflow:hidden; font-size:9px; line-height:1.15; }
+  .layout-card.repair-hit { background:#fff19a !important; border:3px solid #c62828 !important; box-shadow:0 0 0 2px #fff,0 0 0 4px #f57c00,inset 0 0 12px rgba(198,40,40,.15); z-index:2; }
+  .layout-card.repair-hit::after { content:'REPAIR'; position:absolute; right:2px; bottom:1px; color:rgba(160,0,0,.22); font-size:10px; font-weight:900; transform:rotate(-12deg); pointer-events:none; }
+  .layout-card-number { display:flex; justify-content:space-between; gap:4px; align-items:flex-start; margin-bottom:5px; font-size:12px; font-weight:900; color:#103d57; line-height:1; }
+  .repair-badge { flex:0 0 auto; padding:2px 4px; border-radius:999px; background:#b71c1c; color:#fff; font-size:7px; font-weight:900; letter-spacing:.2px; }
+  .layout-card-name { overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; white-space:normal; overflow-wrap:anywhere; color:#17242c; font-size:9px; font-weight:800; line-height:1.15; }
+  .layout-card-field { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .layout-card-field b { font-weight:800; }
+  .layout-card-empty { border-style:dashed; opacity:.35; }
+  .layout-kpi-row { display:grid; grid-template-columns:repeat(3,minmax(120px,1fr)); gap:8px; margin:10px 0; }
+  .layout-mini-kpi { border:1px solid #c9d4da; border-radius:7px; padding:8px 9px; background:#f8fafb; }
+  .layout-mini-kpi .name { font-size:10px; color:#64727c; }
+  .layout-mini-kpi .value { margin-top:2px; font-size:18px; font-weight:800; color:var(--blue); }
+  .layout-print-page { padding:.12in .12in .15in; }
+  .layout-print-header { border:1px solid #222; padding:7px 9px; text-align:center; }
+  .layout-print-title { font-size:17px; font-weight:900; color:var(--blue); }
+  .layout-print-subtitle { margin-top:3px; font-size:10px; }
+  .layout-print-summary { display:grid; grid-template-columns:repeat(4,1fr); border:1px solid #777; border-top:0; font-size:9px; }
+  .layout-print-summary div { padding:5px 4px; border-right:1px solid #777; text-align:center; }
+  .layout-print-summary div:last-child { border-right:0; }
+  .layout-print-grid { flex:1 1 auto; min-height:0; display:grid; grid-template-columns:repeat(var(--layout-cols),minmax(0,1fr)); grid-template-rows:repeat(var(--layout-rows),minmax(0,1fr)); gap:2px; margin-top:7px; }
+  .layout-print-page .layout-card { min-height:0; border-radius:0; padding:2px; font-size:6px; line-height:1.06; }
+  .layout-print-page .layout-card-number { font-size:7.2px; margin-bottom:2px; }
+  .layout-print-page .layout-card-name { font-size:6.2px; line-height:1.05; -webkit-line-clamp:3; }
+  .layout-print-page .layout-card.repair-hit { border-width:2px !important; box-shadow:inset 0 0 0 1px #f57c00 !important; }
+  .layout-print-page .layout-card.repair-hit::after { font-size:6px; right:1px; bottom:0; }
+  .layout-print-page .repair-badge { font-size:5px; padding:1px 2px; }
+  .layout-print-footer { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-top:5px; font-size:7px; color:#555; }
+
   @media (max-width:1050px) {
     .layout { grid-template-columns:1fr; }
     .grid-4 { grid-template-columns:repeat(2,1fr); }
     .guide-layout { grid-template-columns:1fr; }
+    .layout-config-grid { grid-template-columns:1fr; }
   }
   @media (max-width:620px) {
     .app-shell { padding:10px; }
@@ -273,6 +329,7 @@
     .grid-4,.grid-3,.grid-2 { grid-template-columns:1fr; }
     .kpis { grid-template-columns:1fr; }
     .guide-fields { grid-template-columns:1fr; }
+    .layout-kpi-row { grid-template-columns:1fr; }
     .user-guide summary { align-items:flex-start; flex-direction:column; }
   }
   @media print {
@@ -287,22 +344,37 @@
     .orange .section-title { background-color:#f8e2d3 !important; color:#8d4a18 !important; box-shadow:inset 0 0 0 1000px #f8e2d3 !important; }
     .location-title { background-color:#e5e5e5 !important; color:#111 !important; box-shadow:inset 0 0 0 1000px #e5e5e5 !important; }
     .material-table th { background-color:#e4e4e4 !important; box-shadow:inset 0 0 0 1000px #e4e4e4 !important; -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+    .layout-card.repair-hit { background-color:#fff19a !important; border-color:#c62828 !important; -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; color-adjust:exact !important; }
   }
 </style>
 <script>
-/* Load SheetJS from either of two public CDNs. The app remains usable for preview/printing,
-   but Excel import requires one of these resources to load. */
+/* Load external libraries with fallback CDNs. Excel import requires SheetJS.
+   Direct PDF export requires html2canvas and jsPDF; normal browser printing remains available without them. */
 (function(){
-  const urls=[
+  function loadWithFallback(urls,onReady,onFailed){
+    let i=0;
+    function load(){
+      if(i>=urls.length){ if(onFailed) onFailed(); return; }
+      const script=document.createElement('script');
+      script.src=urls[i++];
+      script.onload=onReady;
+      script.onerror=load;
+      document.head.appendChild(script);
+    }
+    load();
+  }
+  loadWithFallback([
     'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
-  ];
-  let i=0;
-  function load(){
-    if(i>=urls.length){ window.dispatchEvent(new CustomEvent('xlsx-load-failed')); return; }
-    const s=document.createElement('script'); s.src=urls[i++]; s.onload=()=>window.dispatchEvent(new CustomEvent('xlsx-loaded')); s.onerror=load; document.head.appendChild(s);
-  }
-  load();
+  ],()=>window.dispatchEvent(new CustomEvent('xlsx-loaded')),()=>window.dispatchEvent(new CustomEvent('xlsx-load-failed')));
+  loadWithFallback([
+    'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
+  ],()=>window.dispatchEvent(new CustomEvent('pdf-library-progress')),()=>window.dispatchEvent(new CustomEvent('pdf-load-failed')));
+  loadWithFallback([
+    'https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js'
+  ],()=>window.dispatchEvent(new CustomEvent('pdf-library-progress')),()=>window.dispatchEvent(new CustomEvent('pdf-load-failed')));
 })();
 </script>
 </head>
@@ -338,7 +410,7 @@
               </div>
               <div class="guide-step">
                 <strong>Import the Excel or CSV job file.</strong>
-                Choose or drag in the source file, select the correct worksheet, and enter the row containing
+                Choose or drag in the source file, select the correct data worksheet and layout worksheet, and enter the row containing
                 the column headers. The data begins on the rows below that header.
               </div>
               <div class="guide-step">
@@ -359,8 +431,7 @@
               </div>
               <div class="guide-step">
                 <strong>Save or print the completed request.</strong>
-                Use <b>Save Repair Request JSON</b> to preserve an editable copy. Use <b>Print / Save as PDF</b>
-                for the handoff form. The app automatically fits complete rows to each page and places the signature,
+                Select an authorized save folder, then use <b>Save JSON to Folder</b> to preserve an editable copy or <b>Save PDF to Folder</b> for the handoff form. Use <b>Print / Browser PDF</b> when a normal print dialog is preferred. The app automatically fits complete rows to each page and places the signature,
                 receipt, and delivery-location sections only on the final page.
               </div>
             </div>
@@ -431,9 +502,8 @@
             </div>
 
             <div class="guide-note">
-              <strong>Recommended practice:</strong> Save a JSON copy before printing when the request may need later
-              revisions. The JSON file retains the imported rows, selected columns, request fields, repair quantities,
-              ordering, and sheet settings.
+              <strong>Recommended practice:</strong> Select the save folder before starting exports, then save a JSON copy before printing when the request may need later revisions. The JSON file retains the imported rows, selected columns, request fields, repair quantities,
+              ordering, sheet settings, parsed running-sheet card positions, and the detected up count.
             </div>
           </section>
         </div>
@@ -468,7 +538,7 @@
             <div><label for="sheetSelect">Worksheet</label><select id="sheetSelect" disabled></select></div>
             <div><label for="headerRow">Header Row</label><input id="headerRow" type="number" min="1" value="1" disabled></div>
           </div>
-          <div class="hint">The parser reads headers only from the exact row shown above. Blank worksheet rows are preserved so the row number remains accurate. Printed forms automatically fit as many complete repair rows as possible on each page. The final page reserves space for the handoff, receipt, location, and footer sections.</div>
+          <div class="hint">The data parser reads headers only from the exact row shown above. The running-sheet parser is configured separately in Section 6. Blank worksheet rows are preserved so the row number remains accurate. Printed forms automatically fit as many complete repair rows as possible on each page. The final page reserves space for the handoff, receipt, location, and footer sections.</div>
         </div>
       </div>
 
@@ -527,17 +597,59 @@
               <tbody id="repairBody"><tr><td class="empty">No repairs have been added.</td></tr></tbody>
             </table>
           </div>
+          <div class="save-folder-box">
+            <label>Authorized Export Folder</label>
+            <div class="save-folder-row">
+              <button id="selectSaveFolder" class="light" type="button">Select Save Folder</button>
+              <div id="saveFolderStatus" class="save-folder-status">No save folder selected. JSON and direct PDF export are disabled until a folder is authorized.</div>
+            </div>
+            <div class="save-folder-note">Exports are created under <b>JSON EXPORTS / PROJECT NAME / JOB NUMBER / FORM NUMBER</b> or <b>PDF EXPORTS / PROJECT NAME / JOB NUMBER / FORM NUMBER</b>. Browser security reveals only the selected folder name, not its full system path.</div>
+          </div>
           <div class="toolbar" style="margin-top:12px">
-            <button id="printBtn" type="button">Print / Save as PDF</button>
-            <button id="exportJson" class="secondary" type="button">Save Repair Request JSON</button>
+            <button id="exportJson" class="secondary" type="button" disabled>Save JSON to Folder</button>
+            <button id="savePdf" type="button" disabled>Save PDF to Folder</button>
+            <button id="printBtn" class="light" type="button">Print / Browser PDF</button>
             <button id="importJson" class="light" type="button">Load Repair Request JSON</button>
             <input id="jsonFile" type="file" accept=".json,application/json" hidden>
             <button id="clearRepairs" class="danger" type="button">Clear Repair List</button>
           </div>
-          <div class="hint">JSON files preserve the request information, imported worksheet rows, selected columns, repair subjects, damage/repair quantities, and sheet settings so the request can be reopened and modified later.</div>
+          <div class="hint">File names use <b>PROJECT_NAME_JOB_NUMBER_FORM_NUMBER_DATE</b> in all capital letters. JSON files preserve the request information, imported worksheet rows, selected columns, repair subjects, damage/repair quantities, and sheet settings so the request can be reopened and modified later.</div>
           <div class="hint">The app recommends the highest Repair QTY as the sheet quantity. A manually entered Number of Sheets Provided overrides that value on the printed form.</div>
         </div>
       </div>
+
+      <div class="panel">
+        <h2>6. Running Sheet Layout &amp; Repair Map</h2>
+        <div class="panel-body">
+          <div class="layout-config-grid">
+            <div>
+              <label for="layoutSheetSelect">Layout Worksheet</label>
+              <select id="layoutSheetSelect" disabled><option value="">No workbook loaded</option></select>
+            </div>
+            <div>
+              <label>Printed Running-Sheet Pages</label>
+              <label class="toggle-line"><input id="includeLayoutPages" type="checkbox" checked> Include highlighted running-sheet layout pages after the repair list</label>
+            </div>
+            <div>
+              <label>Detection Method</label>
+              <div class="toggle-line">NAME / TEAM / MASTER / FORM / CARD # BOXES</div>
+            </div>
+          </div>
+          <div id="layoutStatus" class="layout-status">Upload an Excel workbook and select the worksheet containing the running-sheet layout.</div>
+          <div class="layout-kpi-row">
+            <div class="layout-mini-kpi"><div class="name">Detected Running-Sheet Sides</div><div id="layoutRegionCount" class="value">0</div></div>
+            <div class="layout-mini-kpi"><div class="name">Detected Card Positions</div><div id="layoutPositionCount" class="value">0</div></div>
+            <div class="layout-mini-kpi"><div class="name">Highlighted Repair Positions</div><div id="layoutMatchCount" class="value">0</div></div>
+          </div>
+          <div class="layout-legend">
+            <span class="legend-chip"><span class="legend-swatch"></span> Standard card position</span>
+            <span class="legend-chip"><span class="legend-swatch repair"></span> Card included in repair list</span>
+          </div>
+          <div id="layoutPreviewList" class="layout-preview-list"><div class="empty">No running-sheet layout has been detected.</div></div>
+          <div class="hint" style="margin-top:10px">The parser retains NAME, TEAM, MASTER, FORM, and CARD # for matching, but the visual card boxes display only the larger Card Number and Name for readability. Card Number is the primary repair-match field. The detected position count remains the running-sheet “up” value, so 100-up, 120-up, 121-up, and other layouts remain distinct.</div>
+        </div>
+      </div>
+
     </main>
 
     <aside>
@@ -546,7 +658,7 @@
         <div class="panel-body" style="padding:0">
           <div class="preview-frame"><div id="previewRoot"></div></div>
           <div class="toolbar" style="padding:12px 14px; justify-content:center; border-top:1px solid #cad3da; background:#f8fafb;">
-            <button id="printBtnPreview" type="button">Print / Save as PDF</button>
+            <button id="printBtnPreview" type="button">Print / Browser PDF</button>
           </div>
         </div>
       </div>
@@ -561,7 +673,8 @@ const LOGO='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAeAB4AAD/2wBDAAMCAgMCAgMDA
 const state={
   workbook:null, fileName:'', sheetName:'', rawRows:[], headers:[], dataRows:[],
   selectedColumns:[], selectedSourceIndex:null, repairs:[], xlsxReady:false,
-  sheetsProvidedManual:false, lastPrintPageCount:1
+  sheetsProvidedManual:false, lastPrintPageCount:1, saveDirectoryHandle:null, pdfReady:false,
+  layoutSheetName:'', layoutRegions:[], includeLayoutPages:true, layoutParseMessage:''
 };
 const $=id=>document.getElementById(id);
 const els={
@@ -570,8 +683,10 @@ const els={
   repairQty:$('repairQty'), selectedRowSummary:$('selectedRowSummary'), addRepair:$('addRepair'), repairHead:$('repairHead'), repairBody:$('repairBody'),
   repairCount:$('repairCount'), sheetsNeeded:$('sheetsNeeded'), pageCount:$('pageCount'), previewRoot:$('previewRoot'), printRoot:$('printRoot'),
   sheetsProvided:$('sheetsProvided'), autoSheetsNote:$('autoSheetsNote'), useAutoSheets:$('useAutoSheets'),
-  exportJson:$('exportJson'), importJson:$('importJson'), jsonFile:$('jsonFile'),
-  projectName:$('projectName'), jobNo:$('jobNo'), formNo:$('formNo'), requestDate:$('requestDate'), requestType:$('requestType'), locationDetails:$('locationDetails')
+  exportJson:$('exportJson'), savePdf:$('savePdf'), selectSaveFolder:$('selectSaveFolder'), saveFolderStatus:$('saveFolderStatus'), importJson:$('importJson'), jsonFile:$('jsonFile'),
+  projectName:$('projectName'), jobNo:$('jobNo'), formNo:$('formNo'), requestDate:$('requestDate'), requestType:$('requestType'), locationDetails:$('locationDetails'),
+  layoutSheetSelect:$('layoutSheetSelect'), includeLayoutPages:$('includeLayoutPages'), layoutStatus:$('layoutStatus'), layoutPreviewList:$('layoutPreviewList'),
+  layoutRegionCount:$('layoutRegionCount'), layoutPositionCount:$('layoutPositionCount'), layoutMatchCount:$('layoutMatchCount')
 };
 function setStatus(message,type=''){
   els.importStatus.textContent=message;
@@ -583,6 +698,13 @@ window.addEventListener('xlsx-loaded',()=>{
 });
 window.addEventListener('xlsx-load-failed',()=>{ if(!state.workbook) setStatus('Excel import could not load. CSV import remains available; check the internet connection before importing an Excel workbook.','error'); });
 if(window.XLSX){ state.xlsxReady=true; setStatus('Excel import library is ready. Choose a file.','success'); }
+function refreshPdfReady(){
+  state.pdfReady=!!(window.html2canvas&&window.jspdf?.jsPDF);
+  if(state.saveDirectoryHandle) els.savePdf.disabled=!state.pdfReady;
+}
+window.addEventListener('pdf-library-progress',refreshPdfReady);
+window.addEventListener('pdf-load-failed',()=>{ state.pdfReady=false; });
+refreshPdfReady();
 
 function esc(value){ return String(value??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
 function cellText(v){
@@ -694,7 +816,14 @@ async function importFile(file){
     els.sheetSelect.innerHTML='';
     state.workbook.SheetNames.forEach(name=>els.sheetSelect.add(new Option(name,name)));
     els.sheetSelect.disabled=false; els.headerRow.disabled=false;
-    loadSheet(state.workbook.SheetNames[0],true);
+    const layoutDefault=state.workbook.SheetNames.find(name=>name.trim().toLocaleLowerCase()==='layout')
+      ||state.workbook.SheetNames.find(name=>/layout/i.test(name))||'';
+    const dataDefault=state.workbook.SheetNames.find(name=>/^list$/i.test(name.trim()))
+      ||state.workbook.SheetNames.find(name=>name!==layoutDefault)
+      ||state.workbook.SheetNames[0];
+    els.sheetSelect.value=dataDefault;
+    loadSheet(dataDefault,true);
+    populateLayoutSheetOptions(layoutDefault);
     const kind=isCsv?'CSV table':`${state.workbook.SheetNames.length} worksheet${state.workbook.SheetNames.length===1?'':'s'}`;
     setStatus(`Loaded ${file.name} (${kind}).`,'success');
   }catch(err){ console.error(err); setStatus('Unable to read the file: '+err.message,'error'); }
@@ -885,9 +1014,10 @@ els.addRepair.addEventListener('click',()=>{
   const row=selectedRow(); const qty=parseInt(els.repairQty.value,10);
   if(!row){ alert('Select an Excel row first.'); return; }
   if(!Number.isFinite(qty)||qty<1){ alert('Repair QTY Needed must be at least 1.'); els.repairQty.focus(); return; }
+  const fieldNames=Object.fromEntries(state.headers.map(header=>[header.key,header.name]));
   const existing=state.repairs.find(r=>r.sheetName===state.sheetName&&r.sourceRow===row.__sourceRow);
-  if(existing){ existing.qty=qty; existing.values={...row}; }
-  else state.repairs.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),sheetName:state.sheetName,sourceRow:row.__sourceRow,values:{...row},qty});
+  if(existing){ existing.qty=qty; existing.values={...row}; existing.fieldNames={...fieldNames}; }
+  else state.repairs.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),sheetName:state.sheetName,sourceRow:row.__sourceRow,values:{...row},fieldNames:{...fieldNames},qty});
   state.selectedSourceIndex=null; els.rowSearch.value=''; els.repairQty.value=1; renderSelectedRow(); renderRepairTable(); renderPrint();
 });
 
@@ -937,20 +1067,25 @@ els.sheetsProvided.addEventListener('input',()=>{
   renderPrint();
 });
 els.useAutoSheets.addEventListener('click',()=>{ state.sheetsProvidedManual=false; syncSheetsProvidedField(); renderPrint(); });
-function capitalizeProjectName(value){
-  return cellText(value).split(' ').map(word=>{
-    if(!word) return '';
-    if(/\d/.test(word)||/[A-Z].*[A-Z]/.test(word)||/[a-z][A-Z]/.test(word)) return word;
-    return word.charAt(0).toUpperCase()+word.slice(1).toLowerCase();
-  }).join(' ');
-}
-els.projectName.addEventListener('blur',()=>{
-  const formatted=capitalizeProjectName(els.projectName.value);
-  if(els.projectName.value!==formatted) els.projectName.value=formatted;
-  renderPrint();
+function uppercaseEntry(value){ return cellText(value).toLocaleUpperCase(); }
+['projectName','jobNo','formNo'].forEach(id=>{
+  els[id].addEventListener('input',()=>{
+    const start=els[id].selectionStart;
+    const end=els[id].selectionEnd;
+    const upper=uppercaseEntry(els[id].value);
+    if(els[id].value!==upper){
+      els[id].value=upper;
+      try{ els[id].setSelectionRange(start,end); }catch(_error){}
+    }
+    renderPrint();
+  });
+  els[id].addEventListener('blur',()=>{
+    els[id].value=uppercaseEntry(els[id].value).trim();
+    renderPrint();
+  });
 });
 
-['projectName','jobNo','formNo','requestDate','requestType'].forEach(id=>els[id].addEventListener('input',renderPrint));
+['requestDate','requestType'].forEach(id=>els[id].addEventListener('input',renderPrint));
 els.locationDetails.addEventListener('input',()=>{
   if(els.locationDetails.value.length>350){
     els.locationDetails.value=els.locationDetails.value.slice(0,350);
@@ -958,23 +1093,296 @@ els.locationDetails.addEventListener('input',()=>{
   renderPrint();
 });
 
+
+function normalizedLayoutLabel(value){
+  return cellText(value).toLocaleUpperCase().replace(/[^A-Z0-9]/g,'');
+}
+function normalizedMatchValue(value){
+  const text=cellText(value).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').trim().toLocaleUpperCase();
+  if(/^0*\d+(?:\.0+)?$/.test(text)) return String(parseInt(text,10)||0);
+  return text.replace(/[^A-Z0-9]/g,'');
+}
+function median(values){
+  if(!values.length) return 0;
+  const sorted=values.slice().sort((a,b)=>a-b);
+  const middle=Math.floor(sorted.length/2);
+  return sorted.length%2?sorted[middle]:(sorted[middle-1]+sorted[middle])/2;
+}
+function splitCoordinates(values,minimumGap=3){
+  const unique=[...new Set(values)].sort((a,b)=>a-b);
+  if(unique.length<2) return unique.length?[unique]:[];
+  const diffs=unique.slice(1).map((value,index)=>value-unique[index]);
+  const normal=Math.max(1,median(diffs));
+  const threshold=Math.max(minimumGap,normal*1.9);
+  const groups=[[unique[0]]];
+  for(let index=1;index<unique.length;index++){
+    if(unique[index]-unique[index-1]>threshold) groups.push([]);
+    groups[groups.length-1].push(unique[index]);
+  }
+  return groups;
+}
+function layoutFieldValue(rows,startRow,column,labelName){
+  const aliases={NAME:['NAME'],TEAM:['TEAM'],MASTER:['MASTER','CARDMASTER'],FORM:['FORM'],CARD:['CARD','CARDNO','CARDNUMBER']};
+  const accepted=new Set(aliases[labelName]||[]);
+  const stop=Math.min(rows.length-1,startRow+14);
+  for(let row=startRow;row<=stop;row++){
+    if(accepted.has(normalizedLayoutLabel(rows[row]?.[column]))){
+      const value=rows[row+1]?.[column];
+      return cellText(value);
+    }
+  }
+  return '';
+}
+function sanitizeLayoutCard(card,index=0){
+  return {
+    id:cellText(card?.id)||`CARD-${index+1}`,
+    rowIndex:Math.max(0,parseInt(card?.rowIndex,10)||0),
+    columnIndex:Math.max(0,parseInt(card?.columnIndex,10)||0),
+    sourceRow:Math.max(1,parseInt(card?.sourceRow,10)||1),
+    sourceColumn:Math.max(1,parseInt(card?.sourceColumn,10)||1),
+    name:cellText(card?.name),team:cellText(card?.team),master:cellText(card?.master),form:cellText(card?.form),card:cellText(card?.card)
+  };
+}
+function sanitizeLayoutRegion(region,index=0){
+  const cards=Array.isArray(region?.cards)?region.cards.map(sanitizeLayoutCard):[];
+  return {
+    id:cellText(region?.id)||`LAYOUT-${index+1}`,
+    label:cellText(region?.label)||`RUNNING SHEET ${index+1}`,
+    upCount:Math.max(0,parseInt(region?.upCount,10)||cards.length),
+    rowCount:Math.max(1,parseInt(region?.rowCount,10)||1),
+    columnCount:Math.max(1,parseInt(region?.columnCount,10)||1),
+    minRow:Math.max(0,parseInt(region?.minRow,10)||0),
+    minCol:Math.max(0,parseInt(region?.minCol,10)||0),
+    cards
+  };
+}
+function parseLayoutRows(rows,sheetName){
+  const anchors=[];
+  rows.forEach((row,rowIndex)=>{
+    (Array.isArray(row)?row:[]).forEach((value,columnIndex)=>{
+      if(normalizedLayoutLabel(value)==='NAME') anchors.push({row:rowIndex,column:columnIndex});
+    });
+  });
+  if(!anchors.length) return {regions:[],message:`Worksheet “${sheetName}” does not contain NAME-labelled card boxes.`};
+
+  const rawCards=anchors.map((anchor,index)=>({
+    id:`${sheetName}-${anchor.row+1}-${anchor.column+1}-${index+1}`,
+    anchorRow:anchor.row,anchorColumn:anchor.column,
+    sourceRow:anchor.row+1,sourceColumn:anchor.column+1,
+    name:layoutFieldValue(rows,anchor.row,anchor.column,'NAME'),
+    team:layoutFieldValue(rows,anchor.row,anchor.column,'TEAM'),
+    master:layoutFieldValue(rows,anchor.row,anchor.column,'MASTER'),
+    form:layoutFieldValue(rows,anchor.row,anchor.column,'FORM'),
+    card:layoutFieldValue(rows,anchor.row,anchor.column,'CARD')
+  })).filter(card=>card.name||card.card||card.form||card.master||card.team);
+
+  const columnGroups=splitCoordinates(rawCards.map(card=>card.anchorColumn),3);
+  const rowGroups=splitCoordinates(rawCards.map(card=>card.anchorRow),8);
+  const regions=[];
+  rowGroups.forEach((rowGroup,rowBandIndex)=>{
+    columnGroups.forEach((columnGroup,columnBandIndex)=>{
+      const rowSet=new Set(rowGroup); const columnSet=new Set(columnGroup);
+      const selected=rawCards.filter(card=>rowSet.has(card.anchorRow)&&columnSet.has(card.anchorColumn));
+      if(!selected.length) return;
+      const sortedRows=[...new Set(selected.map(card=>card.anchorRow))].sort((a,b)=>a-b);
+      const sortedColumns=[...new Set(selected.map(card=>card.anchorColumn))].sort((a,b)=>a-b);
+      const rowLookup=new Map(sortedRows.map((value,index)=>[value,index]));
+      const columnLookup=new Map(sortedColumns.map((value,index)=>[value,index]));
+      const sideLabel=columnGroups.length===2?(columnBandIndex===0?'FRONT':'BACK'):`SIDE ${columnBandIndex+1}`;
+      const bandPrefix=rowGroups.length>1?`RUNNING SHEET ${rowBandIndex+1} — `:'';
+      regions.push({
+        id:`${sheetName}-R${rowBandIndex+1}-C${columnBandIndex+1}`,
+        label:`${bandPrefix}${sideLabel}`,
+        upCount:selected.length,
+        rowCount:sortedRows.length,
+        columnCount:sortedColumns.length,
+        minRow:sortedRows[0],minCol:sortedColumns[0],
+        cards:selected.map(card=>sanitizeLayoutCard({
+          ...card,rowIndex:rowLookup.get(card.anchorRow),columnIndex:columnLookup.get(card.anchorColumn)
+        }))
+      });
+    });
+  });
+  regions.sort((a,b)=>a.minRow-b.minRow||a.minCol-b.minCol);
+  const total=regions.reduce((sum,region)=>sum+region.upCount,0);
+  return {regions,message:`Detected ${regions.length} running-sheet side${regions.length===1?'':'s'} and ${total} card position${total===1?'':'s'} from worksheet “${sheetName}”.`};
+}
+function populateLayoutSheetOptions(preferredName=''){
+  const names=state.workbook?.SheetNames||[];
+  els.layoutSheetSelect.innerHTML='';
+  els.layoutSheetSelect.add(new Option('Do not use a layout worksheet',''));
+  names.forEach(name=>els.layoutSheetSelect.add(new Option(name,name)));
+  const exactLayout=names.find(name=>name.trim().toLocaleLowerCase()==='layout');
+  const namedLayout=names.find(name=>/layout/i.test(name));
+  const selected=names.includes(preferredName)?preferredName:(exactLayout||namedLayout||'');
+  els.layoutSheetSelect.value=selected;
+  els.layoutSheetSelect.disabled=!names.length;
+  state.layoutSheetName=selected;
+  parseSelectedLayoutSheet();
+}
+function parseSelectedLayoutSheet(){
+  const name=cellText(els.layoutSheetSelect.value);
+  state.layoutSheetName=name;
+  if(!name||!state.workbook){
+    state.layoutRegions=[];
+    state.layoutParseMessage=name?'The selected layout worksheet is unavailable.':'No layout worksheet is selected.';
+    renderPrint();
+    return;
+  }
+  try{
+    const rows=state.workbook.__jsonRows?.[name]
+      ? state.workbook.__jsonRows[name].map(row=>Array.isArray(row)?row.slice():[])
+      : state.workbook.__csvRows?.[name]
+        ? state.workbook.__csvRows[name].map(row=>Array.isArray(row)?row.slice():[])
+        : XLSX.utils.sheet_to_json(state.workbook.Sheets[name],{header:1,defval:'',raw:false,blankrows:true});
+    const parsed=parseLayoutRows(rows,name);
+    state.layoutRegions=parsed.regions;
+    state.layoutParseMessage=parsed.message;
+  }catch(error){
+    console.error(error);
+    state.layoutRegions=[];
+    state.layoutParseMessage=`Unable to parse worksheet “${name}”: ${error?.message||error}`;
+  }
+  renderPrint();
+}
+function repairNamedEntries(repair){
+  return Object.entries(repair?.values||{}).map(([key,value])=>({
+    name:cellText(repair?.fieldNames?.[key]||headerName(key)),value:cellText(value)
+  }));
+}
+function repairFieldValue(repair,field){
+  const aliases={
+    card:['CARD','CARDNO','CARDNUMBER'],form:['FORM','FORMNO','FORMNUMBER'],name:['NAME','CARDNAME'],team:['TEAM'],master:['MASTER','CARDMASTER']
+  };
+  const accepted=new Set(aliases[field]||[]);
+  const entry=repairNamedEntries(repair).find(item=>accepted.has(normalizedLayoutLabel(item.name)));
+  return entry?.value||'';
+}
+function layoutCardMatchesRepair(card,repair){
+  const repairCard=normalizedMatchValue(repairFieldValue(repair,'card'));
+  const repairForm=normalizedMatchValue(repairFieldValue(repair,'form'));
+  const repairName=normalizedMatchValue(repairFieldValue(repair,'name'));
+  const cardNumber=normalizedMatchValue(card.card);
+  const cardForm=normalizedMatchValue(card.form);
+  const cardName=normalizedMatchValue(card.name);
+
+  // Card number is the primary identifier on the running sheet. A form mismatch
+  // must not hide a valid repair when Excel has formatted the form differently.
+  if(repairCard&&cardNumber&&repairCard===cardNumber) return true;
+
+  // Exact name is the secondary identifier. Use form only as a tie-strengthener,
+  // not as a requirement, because some source lists omit or reformat it.
+  if(repairName&&cardName&&repairName===cardName){
+    return !repairForm||!cardForm||repairForm===cardForm||repairCard===cardNumber;
+  }
+  return false;
+}
+function matchingRepairsForCard(card){ return state.repairs.filter(repair=>layoutCardMatchesRepair(card,repair)); }
+function layoutMatchSummary(){
+  const repairIds=new Set(); let positions=0;
+  state.layoutRegions.forEach(region=>region.cards.forEach(card=>{
+    const matches=matchingRepairsForCard(card);
+    if(matches.length){ positions++; matches.forEach(repair=>repairIds.add(repair.id)); }
+  }));
+  return {positions,repairCount:repairIds.size};
+}
+function layoutCardMarkup(card,printMode=false){
+  const matches=matchingRepairsForCard(card);
+  const quantity=matches.reduce((maximum,repair)=>Math.max(maximum,Number(repair.qty)||0),0);
+  const hitClass=matches.length?' repair-hit':'';
+  const style=`grid-row:${card.rowIndex+1};grid-column:${card.columnIndex+1}`;
+  return `<div class="layout-card${hitClass}" style="${style}" title="${esc(card.name)} — Card ${esc(card.card)}${matches.length?' — REPAIR':''}">
+    <div class="layout-card-number"><span>CARD ${esc(card.card||'—')}</span>${matches.length?`<span class="repair-badge">REPAIR${quantity?` ×${quantity}`:''}</span>`:''}</div>
+    <div class="layout-card-name">${esc(card.name||'—')}</div>
+  </div>`;
+}
+function renderLayoutPreview(){
+  const totalPositions=state.layoutRegions.reduce((sum,region)=>sum+region.upCount,0);
+  const matchSummary=layoutMatchSummary();
+  els.layoutRegionCount.textContent=state.layoutRegions.length;
+  els.layoutPositionCount.textContent=totalPositions;
+  els.layoutMatchCount.textContent=matchSummary.positions;
+  els.layoutStatus.textContent=state.layoutParseMessage||'No layout worksheet is selected.';
+  els.layoutStatus.className='layout-status'+(state.layoutRegions.length?' success':state.layoutSheetName?' error':'');
+  if(!state.layoutRegions.length){
+    els.layoutPreviewList.innerHTML='<div class="empty">No running-sheet layout has been detected.</div>';
+    return;
+  }
+  els.layoutPreviewList.innerHTML=state.layoutRegions.map(region=>{
+    const hits=region.cards.filter(card=>matchingRepairsForCard(card).length).length;
+    const minWidth=Math.max(680,region.columnCount*82);
+    return `<section class="running-sheet-map">
+      <div class="running-sheet-map-header"><div class="running-sheet-map-title">${esc(region.label)} — ${region.upCount}-UP</div><div class="running-sheet-map-meta">${region.columnCount} columns × ${region.rowCount} rows<br>${hits} repair position${hits===1?'':'s'} highlighted</div></div>
+      <div class="running-sheet-scroll"><div class="running-sheet-grid" style="--layout-cols:${region.columnCount};--layout-rows:${region.rowCount};min-width:${minWidth}px">${region.cards.map(card=>layoutCardMarkup(card)).join('')}</div></div>
+    </section>`;
+  }).join('');
+}
+function layoutPrintPageMarkup(region,index,total){
+  const hits=region.cards.filter(card=>matchingRepairsForCard(card).length).length;
+  return `<section class="print-page layout-print-page">
+    <div class="layout-print-header">
+      <div class="layout-print-title">RUNNING SHEET REPAIR MAP — ${esc(region.label)} — ${region.upCount}-UP</div>
+      <div class="layout-print-subtitle">Highlighted boxes identify card positions included in the repair list.</div>
+    </div>
+    <div class="layout-print-summary">
+      <div><b>PROJECT</b><br>${esc(els.projectName.value)}</div>
+      <div><b>JOB #</b><br>${esc(els.jobNo.value)}</div>
+      <div><b>FORM #</b><br>${esc(els.formNo.value)}</div>
+      <div><b>REPAIRS</b><br>${hits} POSITION${hits===1?'':'S'}</div>
+    </div>
+    <div class="layout-print-grid" style="--layout-cols:${region.columnCount};--layout-rows:${region.rowCount}">${region.cards.map(card=>layoutCardMarkup(card,true)).join('')}</div>
+    <div class="layout-print-footer"><span>Layout worksheet: ${esc(state.layoutSheetName||'Saved Layout')}</span><span>Layout page ${index+1} of ${total}</span></div>
+  </section>`;
+}
+els.layoutSheetSelect.addEventListener('change',parseSelectedLayoutSheet);
+els.includeLayoutPages.addEventListener('change',()=>{
+  state.includeLayoutPages=els.includeLayoutPages.checked;
+  renderPrint();
+});
+
 function safeFilePart(value,fallback){
-  const cleaned=cellText(value)
+  const cleaned=uppercaseEntry(value)
     .replace(/[<>:"/\\|?*\x00-\x1F]/g,'-')
     .replace(/\s+/g,' ')
     .trim()
     .replace(/[. ]+$/g,'');
-  return cleaned||fallback;
+  return cleaned||uppercaseEntry(fallback);
+}
+function safeFileToken(value,fallback){
+  return safeFilePart(value,fallback)
+    .replace(/[\s-]+/g,'_')
+    .replace(/_+/g,'_')
+    .replace(/^_+|_+$/g,'');
+}
+function exportNaming(){
+  const missing=[];
+  if(!els.projectName.value.trim()) missing.push('PROJECT NAME');
+  if(!els.jobNo.value.trim()) missing.push('JOB NUMBER');
+  if(!els.formNo.value.trim()) missing.push('FORM NUMBER');
+  if(!els.requestDate.value) missing.push('DATE');
+  if(missing.length) throw new Error(`Complete the following request fields before exporting: ${missing.join(', ')}.`);
+  const projectFolder=safeFilePart(els.projectName.value,'UNNAMED PROJECT');
+  const jobFolder=safeFilePart(els.jobNo.value,'NO JOB NUMBER');
+  const formFolder=safeFilePart(els.formNo.value,'NO FORM NUMBER');
+  const dateToken=safeFileToken(els.requestDate.value,todayISO());
+  const baseName=[
+    safeFileToken(els.projectName.value,'UNNAMED_PROJECT'),
+    safeFileToken(els.jobNo.value,'NO_JOB_NUMBER'),
+    safeFileToken(els.formNo.value,'NO_FORM_NUMBER'),
+    dateToken
+  ].join('_');
+  return {projectFolder,jobFolder,formFolder,baseName};
 }
 function requestJsonPayload(){
   return {
     application:'Guillotine Repair Excel Helper',
-    schemaVersion:1,
+    schemaVersion:3,
     savedAt:new Date().toISOString(),
+    exportConvention:'JSON EXPORTS / PROJECT NAME / JOB NUMBER / FORM NUMBER / PROJECT_NAME_JOB_NUMBER_FORM_NUMBER_DATE.JSON',
     request:{
-      projectName:els.projectName.value,
-      jobNo:els.jobNo.value,
-      formNo:els.formNo.value,
+      projectName:uppercaseEntry(els.projectName.value),
+      jobNo:uppercaseEntry(els.jobNo.value),
+      formNo:uppercaseEntry(els.formNo.value),
       requestDate:els.requestDate.value,
       requestType:els.requestType.value,
       locationDetails:els.locationDetails.value
@@ -994,28 +1402,172 @@ function requestJsonPayload(){
       sheetName:repair.sheetName,
       sourceRow:repair.sourceRow,
       values:{...repair.values},
+      fieldNames:repair.fieldNames&&typeof repair.fieldNames==='object'?{...repair.fieldNames}:{},
       damageCount:Number(repair.qty)||1,
       qty:Number(repair.qty)||1
     })),
+    layout:{
+      sheetName:state.layoutSheetName,
+      includeInPrint:state.includeLayoutPages,
+      parseMessage:state.layoutParseMessage,
+      regions:state.layoutRegions.map(region=>({
+        id:region.id,label:region.label,upCount:region.upCount,rowCount:region.rowCount,columnCount:region.columnCount,
+        minRow:region.minRow,minCol:region.minCol,
+        cards:region.cards.map(card=>({...card}))
+      }))
+    },
     settings:{
       sheetsProvidedManual:state.sheetsProvidedManual,
       sheetsProvided:els.sheetsProvided.value
     }
   };
 }
-function downloadJson(){
-  const payload=requestJsonPayload();
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const link=document.createElement('a');
-  const project=safeFilePart(els.projectName.value,'Repair Request');
-  const job=safeFilePart(els.jobNo.value,'No Job Number');
-  link.href=URL.createObjectURL(blob);
-  link.download=`${project} - Job ${job}.json`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+function supportsFolderAccess(){ return typeof window.showDirectoryPicker==='function'; }
+async function verifyDirectoryPermission(handle,request=false){
+  if(!handle) return false;
+  const options={mode:'readwrite'};
+  if((await handle.queryPermission(options))==='granted') return true;
+  return request&&(await handle.requestPermission(options))==='granted';
 }
+function updateSaveFolderUi(){
+  const selected=!!state.saveDirectoryHandle;
+  els.saveFolderStatus.textContent=selected
+    ? `SELECTED ROOT FOLDER: ${uppercaseEntry(state.saveDirectoryHandle.name)}. EXPORT SUBFOLDERS WILL BE CREATED AUTOMATICALLY.`
+    : 'No save folder selected. JSON and direct PDF export are disabled until a folder is authorized.';
+  els.saveFolderStatus.classList.toggle('selected',selected);
+  els.exportJson.disabled=!selected;
+  els.savePdf.disabled=!selected||!state.pdfReady;
+}
+async function selectSaveFolder(){
+  if(!supportsFolderAccess()){
+    alert('Direct folder saving is not supported in this browser. Open the app in a current version of Microsoft Edge or Google Chrome.');
+    return;
+  }
+  try{
+    const handle=await window.showDirectoryPicker({id:'guillotine-repair-exports',mode:'readwrite',startIn:'documents'});
+    if(!(await verifyDirectoryPermission(handle,true))) throw new Error('Write permission was not granted for the selected folder.');
+    state.saveDirectoryHandle=handle;
+    updateSaveFolderUi();
+  }catch(error){
+    if(error?.name!=='AbortError'){
+      console.error(error);
+      alert(`Unable to select the save folder. ${error?.message||error}`);
+    }
+  }
+}
+async function requireSaveDirectory(){
+  if(!state.saveDirectoryHandle) throw new Error('Select and authorize a save folder before exporting.');
+  if(!(await verifyDirectoryPermission(state.saveDirectoryHandle,true))){
+    state.saveDirectoryHandle=null;
+    updateSaveFolderUi();
+    throw new Error('The selected folder permission is no longer available. Select the save folder again.');
+  }
+  return state.saveDirectoryHandle;
+}
+async function getExportDirectory(exportRoot,naming){
+  let dir=await requireSaveDirectory();
+  for(const folderName of [exportRoot,naming.projectFolder,naming.jobFolder,naming.formFolder]){
+    dir=await dir.getDirectoryHandle(folderName,{create:true});
+  }
+  return dir;
+}
+async function writeBlobToDirectory(directory,fileName,blob){
+  const fileHandle=await directory.getFileHandle(fileName,{create:true});
+  const writable=await fileHandle.createWritable();
+  try{ await writable.write(blob); }
+  finally{ await writable.close(); }
+}
+function setButtonBusy(button,busy,label){
+  if(!button) return;
+  if(busy){
+    button.dataset.originalText=button.textContent;
+    button.textContent=label;
+    button.classList.add('busy');
+    button.disabled=true;
+  }else{
+    button.textContent=button.dataset.originalText||button.textContent;
+    button.classList.remove('busy');
+    updateSaveFolderUi();
+  }
+}
+async function saveJsonToFolder(){
+  try{
+    setButtonBusy(els.exportJson,true,'Saving JSON...');
+    const naming=exportNaming();
+    const payload=requestJsonPayload();
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    const directory=await getExportDirectory('JSON EXPORTS',naming);
+    const fileName=`${naming.baseName}.JSON`;
+    await writeBlobToDirectory(directory,fileName,blob);
+    alert(`JSON saved successfully:\nJSON EXPORTS / ${naming.projectFolder} / ${naming.jobFolder} / ${naming.formFolder} / ${fileName}`);
+  }catch(error){
+    console.error(error);
+    alert(`Unable to save the JSON file. ${error?.message||error}`);
+  }finally{
+    setButtonBusy(els.exportJson,false);
+  }
+}
+async function createPdfBlob(){
+  refreshPdfReady();
+  if(!state.pdfReady) throw new Error('The PDF export libraries are not available. Check the internet connection or use Print / Browser PDF.');
+  renderPrint();
+  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  const pages=[...els.printRoot.querySelectorAll('.print-page')];
+  if(!pages.length) throw new Error('No printable pages were generated.');
+  const originalStyle=els.printRoot.getAttribute('style');
+  Object.assign(els.printRoot.style,{
+    display:'block', position:'fixed', left:'-12000px', top:'0', width:'8in',
+    zIndex:'-9999', background:'#fff', pointerEvents:'none'
+  });
+  try{
+    if(document.fonts?.ready) await document.fonts.ready;
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'portrait',unit:'in',format:'letter',compress:true});
+    for(let i=0;i<pages.length;i++){
+      if(i>0) pdf.addPage('letter','portrait');
+      const canvas=await window.html2canvas(pages[i],{
+        scale:2, backgroundColor:'#ffffff', useCORS:true, logging:false,
+        width:pages[i].scrollWidth, height:pages[i].scrollHeight,
+        windowWidth:pages[i].scrollWidth, windowHeight:pages[i].scrollHeight
+      });
+      const image=canvas.toDataURL('image/jpeg',0.94);
+      const pageWidth=8.5;
+      const pageHeight=11;
+      const margin=.25;
+      const maxWidth=pageWidth-(margin*2);
+      const maxHeight=pageHeight-(margin*2);
+      const ratio=Math.min(maxWidth/canvas.width,maxHeight/canvas.height);
+      const width=canvas.width*ratio;
+      const height=canvas.height*ratio;
+      pdf.addImage(image,'JPEG',(pageWidth-width)/2,(pageHeight-height)/2,width,height,undefined,'FAST');
+    }
+    return pdf.output('blob');
+  }finally{
+    if(originalStyle===null) els.printRoot.removeAttribute('style');
+    else els.printRoot.setAttribute('style',originalStyle);
+  }
+}
+async function savePdfToFolder(){
+  try{
+    setButtonBusy(els.savePdf,true,'Creating PDF...');
+    const naming=exportNaming();
+    await requireSaveDirectory();
+    const blob=await createPdfBlob();
+    const directory=await getExportDirectory('PDF EXPORTS',naming);
+    const fileName=`${naming.baseName}.PDF`;
+    await writeBlobToDirectory(directory,fileName,blob);
+    alert(`PDF saved successfully:\nPDF EXPORTS / ${naming.projectFolder} / ${naming.jobFolder} / ${naming.formFolder} / ${fileName}`);
+  }catch(error){
+    console.error(error);
+    alert(`Unable to save the PDF file. ${error?.message||error}`);
+  }finally{
+    setButtonBusy(els.savePdf,false);
+  }
+}
+els.selectSaveFolder.addEventListener('click',selectSaveFolder);
+els.exportJson.addEventListener('click',saveJsonToFolder);
+els.savePdf.addEventListener('click',savePdfToFolder);
+updateSaveFolderUi();
 function sanitizeLoadedRepair(repair,index){
   const quantity=Math.max(1,parseInt(repair?.damageCount??repair?.qty,10)||1);
   return {
@@ -1023,6 +1575,7 @@ function sanitizeLoadedRepair(repair,index){
     sheetName:cellText(repair?.sheetName)||state.sheetName||'Saved Repair Request',
     sourceRow:parseInt(repair?.sourceRow,10)||index+2,
     values:repair?.values&&typeof repair.values==='object'?{...repair.values}:{},
+    fieldNames:repair?.fieldNames&&typeof repair.fieldNames==='object'?{...repair.fieldNames}:{},
     qty:quantity
   };
 }
@@ -1033,9 +1586,9 @@ function restoreJsonRequest(payload){
   }
 
   const request=payload.request||{};
-  els.projectName.value=cellText(request.projectName);
-  els.jobNo.value=cellText(request.jobNo);
-  els.formNo.value=cellText(request.formNo);
+  els.projectName.value=uppercaseEntry(request.projectName);
+  els.jobNo.value=uppercaseEntry(request.jobNo);
+  els.formNo.value=uppercaseEntry(request.formNo);
   els.requestDate.value=cellText(request.requestDate);
   els.requestType.value=['Return Blanks','Subjects Only'].includes(request.requestType)?request.requestType:'Return Blanks';
   els.locationDetails.value=String(request.locationDetails??'').slice(0,350);
@@ -1084,6 +1637,21 @@ function restoreJsonRequest(payload){
     ? payload.repairs.map(sanitizeLoadedRepair)
     : [];
 
+  const savedLayout=payload.layout||{};
+  state.layoutSheetName=cellText(savedLayout.sheetName);
+  state.layoutRegions=Array.isArray(savedLayout.regions)?savedLayout.regions.map((region,index)=>sanitizeLayoutRegion(region,index)):[];
+  state.layoutParseMessage=cellText(savedLayout.parseMessage);
+  state.includeLayoutPages=savedLayout.includeInPrint!==false;
+  els.includeLayoutPages.checked=state.includeLayoutPages;
+  els.layoutSheetSelect.innerHTML='';
+  if(state.layoutSheetName){
+    els.layoutSheetSelect.add(new Option(state.layoutSheetName,state.layoutSheetName));
+    els.layoutSheetSelect.value=state.layoutSheetName;
+  }else{
+    els.layoutSheetSelect.add(new Option('No saved layout',''));
+  }
+  els.layoutSheetSelect.disabled=true;
+
   const settings=payload.settings||{};
   state.sheetsProvidedManual=!!settings.sheetsProvidedManual;
   els.sheetsProvided.value=settings.sheetsProvided??'';
@@ -1095,7 +1663,6 @@ function restoreJsonRequest(payload){
   renderPrint();
   setStatus(`Loaded saved repair request with ${state.repairs.length} repair subject${state.repairs.length===1?'':'s'}.`,'success');
 }
-els.exportJson.addEventListener('click',downloadJson);
 els.importJson.addEventListener('click',()=>els.jsonFile.click());
 els.jsonFile.addEventListener('change',async()=>{
   const file=els.jsonFile.files?.[0];
@@ -1435,13 +2002,19 @@ function buildDynamicPrintPages(){
 }
 
 function renderPrint(){
-  const printPages=buildDynamicPrintPages();
-  const total=Math.max(1,printPages.length);
-  state.lastPrintPageCount=total;
+  renderLayoutPreview();
+  const repairPages=buildDynamicPrintPages();
+  const repairTotal=Math.max(1,repairPages.length);
+  const layoutPages=state.includeLayoutPages?state.layoutRegions:[];
+  state.lastPrintPageCount=repairTotal+layoutPages.length;
 
-  const markup=printPages
-    .map((pageData,index)=>printPageMarkup(pageData,index,total,false))
+  const repairMarkup=repairPages
+    .map((pageData,index)=>printPageMarkup(pageData,index,repairTotal,false))
     .join('');
+  const layoutMarkup=layoutPages
+    .map((region,index)=>layoutPrintPageMarkup(region,index,layoutPages.length))
+    .join('');
+  const markup=repairMarkup+layoutMarkup;
 
   els.previewRoot.innerHTML=markup;
   els.printRoot.innerHTML=markup;

@@ -426,8 +426,8 @@
               <div class="guide-step">
                 <strong>Review and organize the repair list.</strong>
                 Correct quantities directly in the list, use the arrow buttons to change print order, or remove
-                incorrect entries. Confirm the calculated sheet requirement and enter the number actually provided
-                when it differs.
+                incorrect entries. New entries default to ascending order by the selected Filter/Search Column.
+                Confirm the layout-adjusted sheet requirement and enter the number actually provided when it differs.
               </div>
               <div class="guide-step">
                 <strong>Save or print the completed request.</strong>
@@ -472,7 +472,7 @@
               </div>
               <div class="guide-field">
                 <strong>Header Row</strong>
-                Exact worksheet row containing the field names. This is commonly row 1, but may vary by job.
+                Exact worksheet row containing the field names. The default is row 1 and can be changed when a job uses a different header row.
               </div>
               <div class="guide-field">
                 <strong>Columns to Print</strong>
@@ -480,7 +480,7 @@
               </div>
               <div class="guide-field">
                 <strong>Filter/Search Column</strong>
-                Worksheet field used to locate records, such as Card Number or Card Description.
+                Worksheet field used to locate and sort records. The app defaults to Card # or the closest matching column.
               </div>
               <div class="guide-field">
                 <strong>Repair QTY Needed</strong>
@@ -488,7 +488,7 @@
               </div>
               <div class="guide-field">
                 <strong>Sheets Needed</strong>
-                Automatic recommendation based on the highest Repair QTY in the repair list.
+                Automatic minimum based on each Repair QTY divided by the number of matching copies on one physical running sheet, rounded up. Front and back positions are not added together. The largest per-repair result controls the sheet count.
               </div>
               <div class="guide-field">
                 <strong>Sheets / Builds Provided</strong>
@@ -531,14 +531,14 @@
           <div id="uploadBox" class="upload-box">
             <label for="excelFile">Excel or CSV File</label>
             <input id="excelFile" type="file" accept=".xlsx,.xls,.xlsm,.xlsb,.csv">
-            <div class="hint">Choose a file or drag and drop it anywhere inside this box.</div>
+            <div class="hint">Choose a file or drag and drop it anywhere inside this box. When the filename follows PROJECT NAME / FORM / optional extra term, the Project Name and Form # fields are autofilled when blank.</div>
             <div id="importStatus" class="status">Waiting for a file. CSV import is ready; the Excel import library is loading…</div>
           </div>
           <div class="grid grid-2" style="margin-top:12px">
             <div><label for="sheetSelect">Worksheet</label><select id="sheetSelect" disabled></select></div>
             <div><label for="headerRow">Header Row</label><input id="headerRow" type="number" min="1" value="1" disabled></div>
           </div>
-          <div class="hint">The data parser reads headers only from the exact row shown above. The running-sheet parser is configured separately in Section 6. Blank worksheet rows are preserved so the row number remains accurate. Printed forms automatically fit as many complete repair rows as possible on each page. The final page reserves space for the handoff, receipt, location, and footer sections.</div>
+          <div class="hint">The data worksheet defaults to “Verification &amp; QA” or its closest match, and Header Row defaults to 1. The data parser reads headers only from the exact row shown above. The running-sheet parser is configured separately in Section 6. Blank worksheet rows are preserved so the row number remains accurate. Printed forms automatically fit as many complete repair rows as possible on each page. The final page reserves space for the handoff, receipt, location, and footer sections.</div>
         </div>
       </div>
 
@@ -551,7 +551,7 @@
             <span class="hint" id="columnCount">No columns loaded.</span>
           </div>
           <div id="columnChecklist" class="checklist"><div class="empty">Import a worksheet to list its named columns.</div></div>
-          <div class="hint">Selected columns are always printed in their original worksheet order, regardless of the order in which they are checked.</div>
+          <div class="hint">Selected columns are always printed in their original worksheet order, regardless of the order in which they are checked. Repair entries default to ascending natural-number order by the selected Filter/Search Column.</div>
         </div>
       </div>
 
@@ -580,16 +580,16 @@
         <div class="panel-body">
           <div class="kpis">
             <div class="kpi"><div class="name">Repair Subjects</div><div id="repairCount" class="value">0</div></div>
-            <div class="kpi"><div class="name">Sheets Needed (Maximum Repair QTY)</div><div id="sheetsNeeded" class="value">0</div></div>
+            <div class="kpi"><div class="name">Minimum Sheets Needed (Layout Adjusted)</div><div id="sheetsNeeded" class="value">0</div></div>
             <div class="kpi"><div class="name">Printed Pages</div><div id="pageCount" class="value">1</div></div>
           </div>
           <div class="sheets-entry">
             <label for="sheetsProvided">Number of Sheets / Builds Provided</label>
             <div class="sheets-entry-row">
-              <input id="sheetsProvided" type="number" min="0" step="1" inputmode="numeric" placeholder="Auto-filled from repair quantities">
+              <input id="sheetsProvided" type="number" min="0" step="1" inputmode="numeric" placeholder="Auto-filled from layout-adjusted repair requirements">
               <button id="useAutoSheets" class="light" type="button">Use Auto Value</button>
             </div>
-            <div id="autoSheetsNote" class="auto-sheet-note">Auto-calculated sheets needed: 0</div>
+            <div id="autoSheetsNote" class="auto-sheet-note">Auto-calculated minimum sheets needed: 0</div>
           </div>
           <div class="repair-table-wrap">
             <table class="app-table">
@@ -614,7 +614,7 @@
             <button id="clearRepairs" class="danger" type="button">Clear Repair List</button>
           </div>
           <div class="hint">File names use <b>PROJECT_NAME_JOB_NUMBER_FORM_NUMBER_DATE</b> in all capital letters. JSON files preserve the request information, imported worksheet rows, selected columns, repair subjects, damage/repair quantities, and sheet settings so the request can be reopened and modified later.</div>
-          <div class="hint">The app recommends the highest Repair QTY as the sheet quantity. A manually entered Number of Sheets Provided overrides that value on the printed form.</div>
+          <div class="hint">For each repair, the app divides Repair QTY by the number of matching copies on one physical running sheet and rounds up. Front and back positions are not added together. The largest per-repair result becomes the minimum sheet quantity. Repairs without a layout match are treated as one card per sheet. A manually entered Number of Sheets Provided overrides the automatic value on the printed form.</div>
         </div>
       </div>
 
@@ -790,7 +790,94 @@ function parseDelimitedText(text){
   return rows;
 }
 function todayISO(){ const d=new Date(); const off=d.getTimezoneOffset(); return new Date(d.getTime()-off*60000).toISOString().slice(0,10); }
+function normalizedComparableName(value){
+  return cellText(value)
+    .toLocaleLowerCase()
+    .replace(/&/g,' and ')
+    .replace(/\bworksheet\b|\bsheet\b/g,' ')
+    .replace(/[^a-z0-9]+/g,' ')
+    .trim();
+}
+function preferredDataWorksheet(names,layoutName=''){
+  const candidates=names.filter(name=>name!==layoutName);
+  if(!candidates.length) return names[0]||'';
+  const scored=candidates.map((name,index)=>{
+    const normalized=normalizedComparableName(name);
+    const compact=normalized.replace(/\band\b/g,'').replace(/\s+/g,'');
+    let score=100;
+    if(compact==='verificationqa') score=0;
+    else{
+      if(normalized.includes('verification')) score-=48;
+      if(/(^|\s)qa($|\s)/.test(normalized)||normalized.includes('quality assurance')) score-=42;
+      else if(normalized.includes('quality')) score-=18;
+      score+=Math.abs(compact.length-'verificationqa'.length)/20;
+    }
+    return {name,index,score};
+  }).sort((a,b)=>a.score-b.score||a.index-b.index);
+  if(scored[0]&&scored[0].score<80) return scored[0].name;
+  return candidates.find(name=>/^list$/i.test(name.trim()))||candidates[0];
+}
 els.requestDate.value=todayISO();
+
+function cleanParsedFilePart(value){
+  return cellText(value)
+    .replace(/^(?:PROJECT\s+NAME|FORM(?:\s*(?:#|NO\.?|NUMBER))?)\s*[:=#-]*\s*/i,'')
+    .replace(/\s*\(\d+\)\s*$/,'')
+    .trim();
+}
+function parseRequestFieldsFromFileName(fileName){
+  let base=cellText(fileName).replace(/\.[^.]+$/,'').trim();
+  if(!base) return {projectName:'',formNo:''};
+  base=base.replace(/\s*\(\d+\)\s*$/,'').trim();
+
+  // Explicit FORM labels are the strongest signal and allow project names with spaces.
+  const labelled=base.match(/^(.*?)(?:[\s_|–—-]+)FORM(?:\s*(?:#|NO\.?|NUMBER))?\s*[:=#-]*\s*([A-Z0-9][A-Z0-9./-]*)(?:[\s_|–—-]+.*)?$/i);
+  if(labelled){
+    return {
+      projectName:uppercaseEntry(cleanParsedFilePart(labelled[1])),
+      formNo:uppercaseEntry(cleanParsedFilePart(labelled[2]))
+    };
+  }
+
+  // Most source files use PROJECT_NAME / FORM / optional-extra-term.
+  const strongParts=base
+    .split(/\s*(?:__+|[_|]|[–—]|\s+-\s+)\s*/)
+    .map(cleanParsedFilePart)
+    .filter(Boolean);
+  if(strongParts.length>=2){
+    const numericFormIndex=strongParts.findIndex((part,index)=>index>0&&/[0-9]/.test(part));
+    const formIndex=numericFormIndex>0?numericFormIndex:1;
+    return {
+      projectName:uppercaseEntry(strongParts.slice(0,formIndex).join(' ')),
+      formNo:uppercaseEntry(strongParts[formIndex])
+    };
+  }
+
+  // Fallback for filenames such as "PROJECT NAME 12345 OPTIONAL".
+  const tokens=base.split(/\s+/).filter(Boolean);
+  const formIndex=tokens.findIndex((token,index)=>index>0&&/^(?:FORM[-#:]*)?[A-Z]*\d[A-Z0-9./-]*$/i.test(token));
+  if(formIndex>0){
+    return {
+      projectName:uppercaseEntry(tokens.slice(0,formIndex).join(' ')),
+      formNo:uppercaseEntry(cleanParsedFilePart(tokens[formIndex]))
+    };
+  }
+  return {projectName:'',formNo:''};
+}
+function autofillRequestFieldsFromFileName(fileName){
+  const parsed=parseRequestFieldsFromFileName(fileName);
+  const filled=[];
+  if(parsed.projectName&&!els.projectName.value.trim()){
+    els.projectName.value=parsed.projectName;
+    filled.push(`Project Name “${parsed.projectName}”`);
+  }
+  if(parsed.formNo&&!els.formNo.value.trim()){
+    els.formNo.value=parsed.formNo;
+    filled.push(`Form # “${parsed.formNo}”`);
+  }
+  if(filled.length) renderPrint();
+  return filled;
+}
 
 async function importFile(file){
   if(!file) return;
@@ -813,19 +900,20 @@ async function importFile(file){
       state.workbook=XLSX.read(buffer,{type:'array',cellDates:true,raw:false});
     }
     state.fileName=file.name;
+    const autofilledFields=autofillRequestFieldsFromFileName(file.name);
     els.sheetSelect.innerHTML='';
     state.workbook.SheetNames.forEach(name=>els.sheetSelect.add(new Option(name,name)));
     els.sheetSelect.disabled=false; els.headerRow.disabled=false;
     const layoutDefault=state.workbook.SheetNames.find(name=>name.trim().toLocaleLowerCase()==='layout')
       ||state.workbook.SheetNames.find(name=>/layout/i.test(name))||'';
-    const dataDefault=state.workbook.SheetNames.find(name=>/^list$/i.test(name.trim()))
-      ||state.workbook.SheetNames.find(name=>name!==layoutDefault)
-      ||state.workbook.SheetNames[0];
+    const dataDefault=preferredDataWorksheet(state.workbook.SheetNames,layoutDefault);
     els.sheetSelect.value=dataDefault;
-    loadSheet(dataDefault,true);
+    els.headerRow.value=1;
+    loadSheet(dataDefault,false);
     populateLayoutSheetOptions(layoutDefault);
     const kind=isCsv?'CSV table':`${state.workbook.SheetNames.length} worksheet${state.workbook.SheetNames.length===1?'':'s'}`;
-    setStatus(`Loaded ${file.name} (${kind}).`,'success');
+    const autofillMessage=autofilledFields.length?` Autofilled ${autofilledFields.join(' and ')} from the filename.`:'';
+    setStatus(`Loaded ${file.name} (${kind}).${autofillMessage}`,'success');
   }catch(err){ console.error(err); setStatus('Unable to read the file: '+err.message,'error'); }
 }
 els.excelFile.addEventListener('change',e=>importFile(e.target.files?.[0]));
@@ -839,11 +927,12 @@ els.uploadBox.addEventListener('drop',e=>{
   const file=e.dataTransfer?.files?.[0];
   if(file) importFile(file);
 });
-els.sheetSelect.addEventListener('change',()=>loadSheet(els.sheetSelect.value,true));
+els.sheetSelect.addEventListener('change',()=>{ els.headerRow.value=1; loadSheet(els.sheetSelect.value,false); });
 els.headerRow.addEventListener('change',()=>processHeaderRow());
 
 function loadSheet(name,autoDetect){
   state.sheetName=name;
+  els.searchColumn.value='';
   const ws=state.workbook.Sheets[name];
   state.rawRows=state.workbook.__jsonRows?.[name]
     ? state.workbook.__jsonRows[name].map(row=>Array.isArray(row)?row.slice():[])
@@ -919,16 +1008,40 @@ function renderColumns(){
 $('selectAllColumns').addEventListener('click',()=>{ state.selectedColumns=state.headers.map(h=>h.key); renderColumns(); renderSelectedRow(); renderRepairTable(); renderPrint(); });
 $('clearColumns').addEventListener('click',()=>{ state.selectedColumns=[]; renderColumns(); renderSelectedRow(); renderRepairTable(); renderPrint(); });
 
+function preferredSearchColumnKey(){
+  const scored=state.headers.map((header,index)=>{
+    const normalized=normalizedLayoutLabel(header.name);
+    let score=Number.POSITIVE_INFINITY;
+    if(normalized==='CARD') score=0;
+    else if(['CARDNO','CARDNUM','CARDNUMBER'].includes(normalized)) score=1;
+    else if(normalized.startsWith('CARD')&&/(NO|NUM|NUMBER)/.test(normalized)) score=2;
+    else if(normalized.includes('CARD')&&/(NO|NUM|NUMBER)/.test(normalized)) score=3;
+    else if(normalized.startsWith('CARD')) score=5;
+    else if(normalized.includes('CARD')) score=10;
+    else if(normalized.includes('SUBJECT')&&/(NO|NUM|NUMBER)/.test(normalized)) score=20;
+    else if(normalized.includes('ITEM')&&/(NO|NUM|NUMBER)/.test(normalized)) score=25;
+    return {key:header.key,index,score};
+  }).sort((a,b)=>a.score-b.score||a.index-b.index);
+  return Number.isFinite(scored[0]?.score)?scored[0].key:(state.selectedColumns[0]||state.headers[0]?.key||'');
+}
 function renderSearchColumns(){
   const previous=els.searchColumn.value;
   els.searchColumn.innerHTML='';
   state.headers.forEach(h=>els.searchColumn.add(new Option(h.name,h.key)));
   if(state.headers.some(h=>h.key===previous)) els.searchColumn.value=previous;
-  else if(state.selectedColumns[0]) els.searchColumn.value=state.selectedColumns[0];
+  else els.searchColumn.value=preferredSearchColumnKey();
   els.searchColumn.disabled=!state.headers.length;
   renderSuggestions();
 }
-els.searchColumn.addEventListener('change',()=>{ state.selectedSourceIndex=null; els.rowSearch.value=''; renderSelectedRow(); renderSuggestions(); });
+els.searchColumn.addEventListener('change',()=>{
+  state.selectedSourceIndex=null;
+  els.rowSearch.value='';
+  sortRepairsBySearchColumn();
+  renderSelectedRow();
+  renderSuggestions();
+  renderRepairTable();
+  renderPrint();
+});
 els.rowSearch.addEventListener('input',renderSuggestions);
 els.rowSearch.addEventListener('focus',renderSuggestions);
 function normalizedSearch(value){ return cellText(value).toLowerCase(); }
@@ -1018,9 +1131,30 @@ els.addRepair.addEventListener('click',()=>{
   const existing=state.repairs.find(r=>r.sheetName===state.sheetName&&r.sourceRow===row.__sourceRow);
   if(existing){ existing.qty=qty; existing.values={...row}; existing.fieldNames={...fieldNames}; }
   else state.repairs.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),sheetName:state.sheetName,sourceRow:row.__sourceRow,values:{...row},fieldNames:{...fieldNames},qty});
+  sortRepairsBySearchColumn();
   state.selectedSourceIndex=null; els.rowSearch.value=''; els.repairQty.value=1; renderSelectedRow(); renderRepairTable(); renderPrint();
 });
 
+const repairSortCollator=new Intl.Collator(undefined,{numeric:true,sensitivity:'base'});
+function repairSearchValue(repair,key=els.searchColumn.value){
+  const direct=cellText(repair?.values?.[key]);
+  if(direct) return direct;
+  const desiredName=normalizedLayoutLabel(headerName(key));
+  const fallback=repairNamedEntries(repair).find(entry=>normalizedLayoutLabel(entry.name)===desiredName);
+  return fallback?.value||'';
+}
+function sortRepairsBySearchColumn(){
+  const key=els.searchColumn.value;
+  if(!key||state.repairs.length<2) return;
+  state.repairs.sort((a,b)=>{
+    const av=repairSearchValue(a,key);
+    const bv=repairSearchValue(b,key);
+    if(!av&&!bv) return (Number(a.sourceRow)||0)-(Number(b.sourceRow)||0);
+    if(!av) return 1;
+    if(!bv) return -1;
+    return repairSortCollator.compare(av,bv)||(Number(a.sourceRow)||0)-(Number(b.sourceRow)||0);
+  });
+}
 function repairKeys(){ return syncSelectedColumnOrder(); }
 function renderRepairTable(){
   const keys=repairKeys();
@@ -1041,22 +1175,62 @@ function renderRepairTable(){
 function mini(text,title,fn,cls='secondary'){ const b=document.createElement('button'); b.type='button'; b.className='mini-btn '+cls; b.textContent=text; b.title=title; b.addEventListener('click',fn); return b; }
 function moveRepair(i,delta){ const j=i+delta; if(j<0||j>=state.repairs.length)return; [state.repairs[i],state.repairs[j]]=[state.repairs[j],state.repairs[i]]; renderRepairTable(); renderPrint(); }
 $('clearRepairs').addEventListener('click',()=>{ if(state.repairs.length&&!confirm('Clear all repairs from the export list?'))return; state.repairs=[]; renderRepairTable(); renderPrint(); });
-function maxQty(){ return state.repairs.reduce((m,r)=>Math.max(m,Number(r.qty)||0),0); }
+function matchingLayoutCopiesPerSheet(repair){
+  // Each parsed region represents one printed side of a physical running sheet.
+  // Do not add FRONT and BACK together: five matching positions on each side are
+  // still five completed copies per physical sheet, not ten.
+  let maximumCopiesOnOneSide=0;
+  state.layoutRegions.forEach(region=>{
+    const matches=region.cards.reduce((count,card)=>count+(layoutCardMatchesRepair(card,repair)?1:0),0);
+    maximumCopiesOnOneSide=Math.max(maximumCopiesOnOneSide,matches);
+  });
+  return maximumCopiesOnOneSide;
+}
+function repairSheetRequirement(repair){
+  const quantity=Math.max(0,Number(repair?.qty)||0);
+  if(!quantity) return 0;
+  const copiesPerSheet=Math.max(1,matchingLayoutCopiesPerSheet(repair));
+  return Math.ceil(quantity/copiesPerSheet);
+}
+function automaticSheetCalculation(){
+  let sheets=0;
+  let controllingRepair=null;
+  let copiesPerSheet=1;
+  state.repairs.forEach(repair=>{
+    const repairCopies=Math.max(1,matchingLayoutCopiesPerSheet(repair));
+    const required=repairSheetRequirement(repair);
+    if(required>sheets){
+      sheets=required;
+      controllingRepair=repair;
+      copiesPerSheet=repairCopies;
+    }
+  });
+  return {sheets,controllingRepair,copiesPerSheet};
+}
+function autoSheetsNeeded(){
+  return automaticSheetCalculation().sheets;
+}
 function pageTotal(){
   return Math.max(1,state.lastPrintPageCount||1);
 }
 function syncSheetsProvidedField(){
-  const automatic=maxQty();
-  els.autoSheetsNote.textContent=`Auto-calculated sheets needed: ${automatic}`;
+  const calculation=automaticSheetCalculation();
+  const automatic=calculation.sheets;
+  if(calculation.controllingRepair){
+    const quantity=Math.max(0,Number(calculation.controllingRepair.qty)||0);
+    els.autoSheetsNote.textContent=`Auto-calculated minimum sheets needed: ${automatic} (${quantity} repairs ÷ ${calculation.copiesPerSheet} ${calculation.copiesPerSheet===1?'copy':'copies'} per sheet, rounded up)`;
+  }else{
+    els.autoSheetsNote.textContent='Auto-calculated minimum sheets needed: 0';
+  }
   if(!state.sheetsProvidedManual) els.sheetsProvided.value=automatic||'';
 }
 function sheetsProvidedValue(){
   const entered=parseInt(els.sheetsProvided.value,10);
-  return state.sheetsProvidedManual&&Number.isFinite(entered)&&entered>=0?entered:maxQty();
+  return state.sheetsProvidedManual&&Number.isFinite(entered)&&entered>=0?entered:autoSheetsNeeded();
 }
 function updateKpis(){
   els.repairCount.textContent=state.repairs.length;
-  els.sheetsNeeded.textContent=maxQty();
+  els.sheetsNeeded.textContent=autoSheetsNeeded();
   els.pageCount.textContent=Math.max(1,state.lastPrintPageCount||1);
   syncSheetsProvidedField();
 }
@@ -1068,11 +1242,19 @@ els.sheetsProvided.addEventListener('input',()=>{
 });
 els.useAutoSheets.addEventListener('click',()=>{ state.sheetsProvidedManual=false; syncSheetsProvidedField(); renderPrint(); });
 function uppercaseEntry(value){ return cellText(value).toLocaleUpperCase(); }
+function uppercaseTypingValue(value){
+  return String(value??'')
+    .replace(/\u00a0/g,' ')
+    .replace(/[\u200B-\u200D\uFEFF]/g,'')
+    .toLocaleUpperCase();
+}
 ['projectName','jobNo','formNo'].forEach(id=>{
   els[id].addEventListener('input',()=>{
     const start=els[id].selectionStart;
     const end=els[id].selectionEnd;
-    const upper=uppercaseEntry(els[id].value);
+    // Preserve spaces while the user is typing. Normal whitespace cleanup occurs
+    // only on blur so a trailing space is not immediately removed.
+    const upper=uppercaseTypingValue(els[id].value);
     if(els[id].value!==upper){
       els[id].value=upper;
       try{ els[id].setSelectionRange(start,end); }catch(_error){}
@@ -1080,7 +1262,7 @@ function uppercaseEntry(value){ return cellText(value).toLocaleUpperCase(); }
     renderPrint();
   });
   els[id].addEventListener('blur',()=>{
-    els[id].value=uppercaseEntry(els[id].value).trim();
+    els[id].value=uppercaseEntry(els[id].value);
     renderPrint();
   });
 });
@@ -1636,6 +1818,7 @@ function restoreJsonRequest(payload){
   state.repairs=Array.isArray(payload.repairs)
     ? payload.repairs.map(sanitizeLoadedRepair)
     : [];
+  sortRepairsBySearchColumn();
 
   const savedLayout=payload.layout||{};
   state.layoutSheetName=cellText(savedLayout.sheetName);
